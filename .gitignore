@@ -1,0 +1,7 @@
+# Files
+config.yml
+.env
+
+# Folders
+node_modules
+dist
