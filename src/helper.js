@@ -113,9 +113,7 @@ export default class Helper {
           // Copy config file to non example file
           fs.copyFileSync(path.resolve(dir, 'config.example.yml'), configFilename)
           // Read and replace config file
-          let config = fs.readFileSync(configFilename, { encoding: 'utf8' })
-          if (process.env.STEAM_API_KEY) config = config
-          .replace('{{STEAM_KEY}}', process.env.STEAM_API_KEY)
+          let config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('{{STEAM_KEY}}', process.env.STEAM_API_KEY || "unknown")
           fs.writeFileSync(configFilename, config)
      }
 
