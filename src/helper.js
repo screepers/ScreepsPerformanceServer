@@ -189,7 +189,8 @@ export default class Helper {
                }
           }
      }
-     static async sendResult(milestones, status) {
+     static async sendResult(milestones, status,start) {
+          if (!process.env.EXPORT_URL) return;
           let commitName = 'localhost'
           if (process.env.GITHUB_EVENT_PATH) {
                const file = fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8');
@@ -197,8 +198,8 @@ export default class Helper {
                commitName = object["commits"][0].message;
           }
           try {
-               await fetch('http://localhost:5000', {
-                    method: 'POST', body: JSON.stringify({ milestones, lastTick, status, commitName }), headers: {
+               await fetch(process.env.EXPORT_URL, {
+                    method: 'POST', body: JSON.stringify({ milestones, lastTick, status, commitName, startTime:start,endTime:Date.now() }), headers: {
                          'Accept': 'application/json',
                          'Content-Type': 'application/json'
                     }

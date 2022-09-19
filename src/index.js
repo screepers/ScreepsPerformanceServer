@@ -8,6 +8,8 @@ const controllerRooms = {}
 const status = {}
 let lastTick = 0
 
+const start = Date.now();
+
 process.once('SIGINT', code => {
      console.log('SIGINT received...')
      console.log(`${lastTick} End of simulation`)
@@ -70,7 +72,7 @@ class Tester {
                const fails = Config.milestones.filter(
                     milestone => milestone.required && milestone.tick < lastTick && !milestone.success,
                )
-               await Helper.sendResult(status, Config.milestones)
+               await Helper.sendResult(status, Config.milestones,start)
 
                if (fails.length > 0) {
                     for (const fail of fails) {
@@ -183,7 +185,6 @@ class Tester {
 
      async run() {
           console.log("Starting...")
-          const start = Date.now()
           await Helper.initServer()
           await Helper.startServer()
           console.log("Waiting...")
