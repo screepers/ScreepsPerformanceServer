@@ -1,0 +1,8 @@
+# Folders
+
+/bots
+/node_modules
+
+## File types
+
+**/*.json
