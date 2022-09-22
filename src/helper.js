@@ -168,48 +168,42 @@ export default class Helper {
   }
 
   static initControllerID(event, status, controllerRooms) {
-    const updatedStatus = status;
-    const updatedControllerRooms = controllerRooms;
     if (status[event.id].controller === null) {
       // eslint-disable-next-line prefer-destructuring
-      updatedStatus[event.id].controller = _.filter(event.data.objects, filter.controller)[0];
+      status[event.id].controller = _.filter(event.data.objects, filter.controller)[0];
       // eslint-disable-next-line no-underscore-dangle
-      updatedStatus[event.id].controller = updatedStatus[event.id].controller._id;
-      updatedControllerRooms[updatedStatus[event.id].controller] = event.id;
+      status[event.id].controller = status[event.id].controller._id;
+      controllerRooms[status[event.id].controller] = event.id;
     }
-    return { updatedStatus, updatedControllerRooms };
   }
 
   static updateCreeps(event, status) {
-    const updatedStatus = status;
     const creeps = _.filter(event.data.objects, filter.creeps);
     if (_.size(creeps) > 0) {
-      updatedStatus[event.id].creeps += _.size(creeps);
+      status[event.id].creeps += _.size(creeps);
     }
   }
 
   static updateStructures(event, status) {
-    const updatedStatus = status;
     const structures = _.filter(event.data.objects, filter.structures);
     if (_.size(structures) > 0) {
-      updatedStatus[event.id].structures += _.size(structures);
+      status[event.id].structures += _.size(structures);
     }
   }
 
   static updateController(event, status, controllerRooms) {
-    const updatedStatus = status;
     const controllers = _.pick(event.data.objects, Object.keys(controllerRooms));
     Object.keys(controllers).forEach((controllerId) => {
       const controller = controllers[controllerId];
       const roomName = controllerRooms[controllerId];
-      if (updatedStatus[roomName] === undefined) {
+      if (status[roomName] === undefined) {
         return;
       }
       if (controller.progress >= 0) {
-        updatedStatus[roomName].progress = controller.progress;
+        status[roomName].progress = controller.progress;
       }
       if (controller.level >= 0) {
-        updatedStatus[roomName].level = controller.level;
+        status[roomName].level = controller.level;
       }
     });
   }
