@@ -76,16 +76,15 @@ class Tester {
       const fails = Config.milestones.filter(
         (milestone) => milestone.required && milestone.tick < lastTick && !milestone.success,
       );
-      await Helper.sendResult(status, Config.milestones, start);
+      await Helper.sendResult(status, Config.milestones, lastTick, start);
 
+      fails.forEach((fail) => {
+        console.log(`${lastTick} Milestone failed ${JSON.stringify(fail)}`);
+      });
       if (fails.length > 0) {
-        for (const fail of fails) {
-          console.log(`${lastTick} Milestone failed ${JSON.stringify(fail)}`);
-        }
-        console.log(`${lastTick} Status check: failed`);
         reject('Not all milestones are hit.');
-        return;
       }
+
       console.log(`${lastTick} Status check: passed`);
       resolve();
     }
@@ -96,22 +95,23 @@ class Tester {
       *
       * @param {object} event
       */
-  statusUpdater = (event) => {
+  static statusUpdater = (event) => {
     if (event.data.gameTime !== lastTick) {
-      lastTick = event.data.gameTime;
-      for (const milestone of Config.milestones) {
+      lastTick = event.data.gameTime || 0;
+      for (let i = 0; i < Config.milestones.length; i += 1) {
+        const milestone = Config.milestones[i];
         const failedRooms = [];
         if (typeof milestone.success === 'undefined' || milestone.success === null) {
           let success = Object.keys(status).length === Config.trackedRooms.length;
-          for (const room of Object.keys(status)) {
-            for (const key of Object.keys(milestone.check)) {
+          Object.keys(status).forEach((room) => {
+            Object.keys(milestone.check).forEach((key) => {
               if (status[room][key] < milestone.check[key]) {
                 success = false;
                 failedRooms.push(room);
-                break;
               }
-            }
-          }
+            });
+          });
+
           if (success) {
             milestone.success = event.data.gameTime < milestone.tick;
             milestone.tickReached = event.data.gameTime;
@@ -128,7 +128,7 @@ class Tester {
         }
 
         if (milestone.success) {
-          continue;
+          return;
         }
 
         if (milestone.tick === event.data.gameTime) {
@@ -139,7 +139,6 @@ class Tester {
               milestone,
             )} status: ${JSON.stringify(status)}`,
           );
-          continue;
         }
       }
     }
@@ -165,6 +164,7 @@ class Tester {
       * @return {object}
       */
   async execute() {
+    // eslint-disable-next-line no-async-promise-executor
     const execute = new Promise(async (resolve, reject) => {
       await Helper.executeCliCommand('system.resetAllData()');
       await Helper.executeCliCommand('system.pauseSimulation()');
@@ -174,16 +174,16 @@ class Tester {
 
       const spawnBots = [];
       const rooms = Object.entries(Config.rooms);
-      for (let roomCount = 0; roomCount < rooms.length; roomCount++) {
+      for (let roomCount = 0; roomCount < rooms.length; roomCount += 1) {
         const roomInfo = rooms[roomCount];
         const roomName = roomInfo[0];
         const botName = roomInfo[1];
-        spawnBots.push(Helper.spawnBot(botName, roomName,this.roomsSeen));
+        spawnBots.push(Helper.spawnBot(botName, roomName, this.roomsSeen));
       }
       await Promise.all(spawnBots);
 
       if (Object.keys(Config.rooms).length === Object.keys(this.roomsSeen).length) {
-        Helper.followLog(Config.trackedRooms, this.statusUpdater);
+        Helper.followLog(Config.trackedRooms, Tester.statusUpdater);
         await Helper.executeCliCommand('system.resumeSimulation()');
       }
       this.checkForSuccess(resolve, reject);

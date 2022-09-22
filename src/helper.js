@@ -4,7 +4,7 @@ import path from 'path';
 import _ from 'lodash';
 import { ScreepsAPI } from 'screeps-api';
 import { exec, execSync } from 'child_process';
-import Config from "./config.js"
+import Config from './config.js';
 
 const filter = {
   controller: (o) => {
@@ -46,11 +46,8 @@ export default class Helper {
       * @param {function} statusUpdater - Function to handle status updates
       * @return {undefined}
       */
-  static async followLog(rooms, statusUpdater, restrictToRoom) {
-    for (const room of rooms) {
-      if (restrictToRoom && room !== restrictToRoom) {
-        continue;
-      }
+  static async followLog(rooms, statusUpdater) {
+    rooms.forEach(async (room) => {
       const api = new ScreepsAPI({
         email: room,
         password: 'password',
@@ -64,9 +61,9 @@ export default class Helper {
 
       api.socket.connect();
       api.socket.on('connected', () => { });
-      api.socket.on('auth', (event) => { });
+      api.socket.on('auth', () => { });
       api.socket.subscribe(`room:${room}`, statusUpdater);
-    }
+    });
   }
   /**
    * Spawn bot
@@ -74,11 +71,10 @@ export default class Helper {
    * @param {string} roomName
    */
 
-  static async spawnBot(botName,roomName,roomsSeen) {
+  static async spawnBot(botName, roomName, roomsSeen) {
     console.log(`Spawn ${botName} in ${roomName}`);
-    await this.executeCliCommand(`bots.spawn('${botName}', '${roomName}', {username: '${roomName}', auto:'true',cpu:'${Config.userCpu}'})\r\n`)
+    await this.executeCliCommand(`bots.spawn('${botName}', '${roomName}', {username: '${roomName}', auto:'true',cpu:'${Config.userCpu}'})\r\n`);
     await this.setPassword(roomName, roomsSeen, Config.playerRooms);
-
   }
 
   /**
@@ -92,6 +88,7 @@ export default class Helper {
       * @return {boolean}
       */
   static async setPassword(roomName, roomsSeen, playerRooms) {
+    // eslint-disable-next-line no-param-reassign
     roomsSeen[roomName] = true;
     console.log(`Set password for ${roomName}`);
     /* eslint max-len: ["error", 1300] */
@@ -115,6 +112,7 @@ export default class Helper {
       * @return {object}
       */
   static sleep(seconds) {
+    // eslint-disable-next-line no-promise-executor-return
     return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
   }
 
@@ -143,10 +141,10 @@ export default class Helper {
     console.log('Starting server...');
     execSync('docker-compose down');
     const command = 'docker-compose up';
-    const maxTime = new Promise((resolve, reject) => {
+    const maxTime = new Promise((resolve) => {
       setTimeout(resolve, 300 * 1000, 'Timeout');
     });
-    const startServer = new Promise((resolve, reject) => {
+    const startServer = new Promise((resolve) => {
       const child = exec(command);
       child.stdout.on('data', (data) => {
         console.log(data);
@@ -156,7 +154,7 @@ export default class Helper {
         }
       });
     });
-    return await Promise.race([startServer, maxTime])
+    return Promise.race([startServer, maxTime])
       .then((result) => {
         if (result === 'Timeout') {
           console.log('Timeout starting server!');
@@ -165,50 +163,58 @@ export default class Helper {
         return true;
       })
       .catch((result) => {
-        logger.log('error', { data: result, options });
+        console.error('error', { data: result });
       });
   }
 
   static initControllerID(event, status, controllerRooms) {
+    const updatedStatus = status;
+    const updatedControllerRooms = controllerRooms;
     if (status[event.id].controller === null) {
-      status[event.id].controller = _.filter(event.data.objects, filter.controller)[0];
-      status[event.id].controller = status[event.id].controller._id;
-      controllerRooms[status[event.id].controller] = event.id;
+      // eslint-disable-next-line prefer-destructuring
+      updatedStatus[event.id].controller = _.filter(event.data.objects, filter.controller)[0];
+      // eslint-disable-next-line no-underscore-dangle
+      updatedStatus[event.id].controller = updatedStatus[event.id].controller._id;
+      updatedControllerRooms[updatedStatus[event.id].controller] = event.id;
     }
+    return { updatedStatus, updatedControllerRooms };
   }
 
   static updateCreeps(event, status) {
+    const updatedStatus = status;
     const creeps = _.filter(event.data.objects, filter.creeps);
     if (_.size(creeps) > 0) {
-      status[event.id].creeps += _.size(creeps);
+      updatedStatus[event.id].creeps += _.size(creeps);
     }
   }
 
   static updateStructures(event, status) {
+    const updatedStatus = status;
     const structures = _.filter(event.data.objects, filter.structures);
     if (_.size(structures) > 0) {
-      status[event.id].structures += _.size(structures);
+      updatedStatus[event.id].structures += _.size(structures);
     }
   }
 
   static updateController(event, status, controllerRooms) {
+    const updatedStatus = status;
     const controllers = _.pick(event.data.objects, Object.keys(controllerRooms));
-    for (const controllerId of Object.keys(controllers)) {
+    Object.keys(controllers).forEach((controllerId) => {
       const controller = controllers[controllerId];
       const roomName = controllerRooms[controllerId];
-      if (status[roomName] === undefined) {
-        continue;
+      if (updatedStatus[roomName] === undefined) {
+        return;
       }
       if (controller.progress >= 0) {
-        status[roomName].progress = controller.progress;
+        updatedStatus[roomName].progress = controller.progress;
       }
       if (controller.level >= 0) {
-        status[roomName].level = controller.level;
+        updatedStatus[roomName].level = controller.level;
       }
-    }
+    });
   }
 
-  static async sendResult(milestones, status, start) {
+  static async sendResult(milestones, status, lastTick, start) {
     if (!process.env.EXPORT_URL) return;
     let commitName = 'localhost';
     if (process.env.GITHUB_EVENT_PATH) {
@@ -227,7 +233,9 @@ export default class Helper {
           'Content-Type': 'application/json',
         },
       });
-    } catch (error) { }
+    } catch (error) {
+      console.log('Failed to end result to export url');
+    }
   }
 
   static async executeCliCommand(command) {
@@ -242,7 +250,7 @@ export default class Helper {
       console.log(text);
       return text;
     } catch (error) {
-      return 'error';
+      return undefined;
     }
   }
 }
