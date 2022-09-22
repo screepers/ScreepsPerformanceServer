@@ -12,7 +12,14 @@
         "screepsmod-server-stats": "^1.0.0"
     },
     "scripts": {
-        "server": "node src/index.js"
+        "server": "node src/index.js",
+        "lint": "eslint **/*",
+        "lint-fix": "eslint **/* --fix"
     },
-    "type": "module"
+    "type": "module",
+    "devDependencies": {
+        "eslint": "^8.23.1",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.26.0"
+    }
 }
