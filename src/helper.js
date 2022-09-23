@@ -1,10 +1,15 @@
 import fs from 'fs';
 import fetch from 'node-fetch';
-import path from 'path';
 import _ from 'lodash';
 import { ScreepsAPI } from 'screeps-api';
 import { exec, execSync } from 'child_process';
 import Config from './config.js';
+
+import { join, dirname } from 'path';
+
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const filter = {
   controller: (o) => {
@@ -118,14 +123,12 @@ export default class Helper {
 
   static async initServer() {
     console.log('Initializing server...');
-    const dir = '';
-
-    const configFilename = path.resolve(dir, 'config.yml');
+    const configFilename = join(__dirname, '../config.yml');
 
     // Delete old config file
     if (fs.existsSync(configFilename)) fs.unlinkSync(configFilename);
     // Copy config file to non example file
-    fs.copyFileSync(path.resolve(dir, 'config.example.yml'), configFilename);
+    fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
     // Read and replace config file
     const config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('{{STEAM_KEY}}', process.env.STEAM_API_KEY || 'unknown');
     fs.writeFileSync(configFilename, config);
@@ -138,9 +141,10 @@ export default class Helper {
       * @return {object}
       */
   static async startServer() {
+    const dockerComposePath = join(__dirname, '../docker-compose.yml');
     console.log('Starting server...');
-    execSync('docker-compose down');
-    const command = 'docker-compose up';
+    execSync(`docker-compose -f ${dockerComposePath} down`);
+    const command = `docker-compose -f ${dockerComposePath} up`;
     const maxTime = new Promise((resolve) => {
       setTimeout(resolve, 300 * 1000, 'Timeout');
     });
