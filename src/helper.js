@@ -3,11 +3,12 @@ import fetch from 'node-fetch';
 import _ from 'lodash';
 import { ScreepsAPI } from 'screeps-api';
 import { exec, execSync } from 'child_process';
-import Config from './config.js';
 
 import { join, dirname } from 'path';
 
 import { fileURLToPath } from 'url';
+import Config from './config.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
