@@ -25,8 +25,8 @@ function UpdateEnvFile() {
   const steamKey = process.argv[4];
   if (!steamKey) return;
 
-  let exampleEnvText = fs.readFileSync(exampleEnvFilePath);
-  exampleEnvText = exampleEnvText.toString().replace('http://steamcommunity.com/dev/apikey', `${steamKey}`);
+  let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
+  exampleEnvText = exampleEnvText.replace('http://steamcommunity.com/dev/apikey', steamKey);
   const envFile = join(__dirname, '../.env');
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');

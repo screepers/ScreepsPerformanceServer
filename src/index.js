@@ -1,9 +1,5 @@
-import * as dotenv from 'dotenv';
-
 import Helper from './helper.js';
 import Config from './config.js';
-
-dotenv.config();
 
 const controllerRooms = {};
 const status = {};
@@ -44,10 +40,6 @@ class Tester {
         console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
       }
     }
-
-    if (process.env.STEAM_API_KEY !== undefined && process.env.STEAM_API_KEY.length === 0) {
-      process.env.STEAM_API_KEY = undefined;
-    }
   }
 
   /**
@@ -76,7 +68,7 @@ class Tester {
       const fails = Config.milestones.filter(
         (milestone) => milestone.required && milestone.tick < lastTick && !milestone.success,
       );
-      await Helper.sendResult(status, Config.milestones, lastTick, start);
+      await Helper.sendResult(Config.milestones,status, lastTick, start);
 
       fails.forEach((fail) => {
         console.log(`${lastTick} Milestone failed ${JSON.stringify(fail)}`);
