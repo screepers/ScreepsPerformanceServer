@@ -243,7 +243,7 @@ export default class Helper {
     try {
       // TODO: Remove sleep
       await this.sleep(2);
-      const result = await fetch('http://167.86.90.82:21026/cli', {
+      const result = await fetch('http://localhost:21026/cli', {
         method: 'POST', body: command, headers: { 'Content-Type': 'text/plain' },
       });
       const text = await result.text();
