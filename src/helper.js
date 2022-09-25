@@ -251,6 +251,7 @@ export default class Helper {
       console.log(text);
       return text;
     } catch (error) {
+      console.log(error)
       return undefined;
     }
   }
