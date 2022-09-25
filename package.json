@@ -26,7 +26,7 @@
     "bin": {
         "screeps-performance-server": "./bin/setup.js"
     },
-    "version": "1.0.31",
+    "version": "1.0.4",
     "files": [
         "src",
         "bots",
