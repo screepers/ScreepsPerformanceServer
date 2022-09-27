@@ -36,5 +36,17 @@ npm run server
 
 ## Usage
 
-After you see `Start the simulation with runtime (... ticks if choose selected tick run)` then go to `localhost:21025` and check out the progress of your bot
+After you see `Start the simulation with runtime (... ticks if choose selected tick run)` then go to `localhost:21025` and check out the progress of your bot.
+The default password is `password`.
+
 Its also possible to start using `npx`, to do this you need to do `npm i -g screeps-performance-server`, then `npx screeps-performance-server` with optional parameter to limit tick count  `npx screeps-performance-server 1000`
+
+## Milestones
+
+Inside the config you can add milestones, these milestones will be checked every tick and if one of them is reached they will be logged. Server should stop after all milestones are reached.
+
+To add an milestone you can just edit or add one and add/update one of the following options:
+
+- level (rcl)
+- creeps (count)
+- structures (count)
