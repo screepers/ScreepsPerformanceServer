@@ -242,8 +242,6 @@ export default class Helper {
 
   static async executeCliCommand(command) {
     try {
-      // TODO: Remove sleep
-      await this.sleep(2);
       const result = await fetch('http://localhost:21026/cli', {
         method: 'POST', body: command, headers: { 'Content-Type': 'text/plain' },
       });
