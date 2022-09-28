@@ -23,10 +23,12 @@ function UpdateBotFile() {
 function UpdateEnvFile() {
   const exampleEnvFilePath = join(__dirname, '../.env.example');
   const steamKey = process.argv[4];
+  const exportBaseUrl = process.argv[5];
   if (!steamKey) return;
 
   let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
   exampleEnvText = exampleEnvText.replace('http://steamcommunity.com/dev/apikey', steamKey);
+  if (exportBaseUrl) exampleEnvText.replace('localhost', exportBaseUrl);
   const envFile = join(__dirname, '../.env');
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');
