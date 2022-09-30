@@ -216,7 +216,7 @@ export default class Helper {
     });
   }
 
-  static async sendResult(milestones, status, lastTick, start) {
+  static async sendResult(milestones, status, controllerStatus, lastTick, start) {
     if (!process.env.EXPORT_URL) return;
     let commitName = 'localhost';
     if (process.env.GITHUB_EVENT_PATH) {
@@ -224,11 +224,19 @@ export default class Helper {
       const object = JSON.parse(file);
       commitName = object.commits[0].message;
     }
+    
+    const newControllerStatus = [];
+    Object.keys(controllerStatus).forEach((roomName) => {
+      const controller = controllerStatus[roomName];
+      newControllerStatus.push({roomName, controller});
+    });
+    controllerStatus = newControllerStatus;
+
     try {
       await fetch(process.env.EXPORT_URL, {
         method: 'POST',
         body: JSON.stringify({
-          milestones, lastTick, status, commitName, startTime: start, endTime: Date.now(),
+          milestones, lastTick, status, commitName, startTime: start, endTime: Date.now(), controllerStatus
         }),
         headers: {
           Accept: 'application/json',

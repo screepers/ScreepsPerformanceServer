@@ -3,6 +3,7 @@ import Config from './config.js';
 
 const controllerRooms = {};
 const status = {};
+const controllerStatus = {};
 let lastTick = 0;
 
 const start = Date.now();
@@ -25,6 +26,8 @@ Config.trackedRooms.forEach((room) => {
     level: 0,
     structures: 0,
   };
+
+  controllerStatus[room] = {};
 });
 
 class Tester {
@@ -68,7 +71,7 @@ class Tester {
       const fails = Config.milestones.filter(
         (milestone) => milestone.required && milestone.tick < lastTick && !milestone.success,
       );
-      await Helper.sendResult(Config.milestones,status, lastTick, start);
+      await Helper.sendResult(Config.milestones,status,controllerStatus, lastTick, start);
 
       fails.forEach((fail) => {
         console.log(`${lastTick} Milestone failed ${JSON.stringify(fail)}`);
@@ -90,6 +93,16 @@ class Tester {
   static statusUpdater = (event) => {
     if (event.data.gameTime !== lastTick) {
       lastTick = event.data.gameTime || 0;
+
+      Object.keys(status).forEach((room) => {
+        const controllerLevel = status[room].level;
+        if (controllerLevel >= 1 && controllerStatus[room][controllerLevel] === undefined) controllerStatus[room][controllerLevel] = {
+          level: controllerLevel,
+          progress: status[room].progress,
+          tick: lastTick,
+        };
+      });
+
       for (let i = 0; i < Config.milestones.length; i += 1) {
         const milestone = Config.milestones[i];
         const failedRooms = [];
@@ -119,11 +132,7 @@ class Tester {
           }
         }
 
-        if (milestone.success) {
-          return;
-        }
-
-        if (milestone.tick === event.data.gameTime) {
+        if (!milestone.success && milestone.tick === event.data.gameTime) {
           milestone.failedRooms = failedRooms;
           console.log('===============================');
           console.log(
