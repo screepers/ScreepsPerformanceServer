@@ -6,18 +6,27 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-function UpdateBotFile() {
-  const botFile = join(__dirname, '../bots/sampleBot/main.js');
-  const newBotFile = process.argv[3];
-  if (!newBotFile) {
+function UpdateBotFolder() {
+  const botFolder = join(__dirname, '../bots/sampleBot');
+  const newBotFolder = process.argv[3];
+  if (!newBotFolder) {
     console.log('Please provide a path to the bot file');
     throw new Error('No bot file provided');
   }
 
-  const botCode = fs.readFileSync(newBotFile);
-  console.log('Replacing bot code with', botFile);
-  fs.writeFileSync(botFile, botCode);
-  console.log('Bot file updated');
+  const filesInNewBotFolder = fs.readdirSync(newBotFolder);
+  const botFiles = filesInNewBotFolder.filter((file) => file.endsWith('.js'));
+  if (botFiles.length === 0) {
+    console.log('No bot files found in the provided folder');
+    throw new Error('No bot files found');
+  }
+
+  botFiles.forEach(fileName => {
+    const file = fs.readFileSync(join(newBotFolder, fileName), 'utf8');
+    fs.writeFileSync(join(botFolder, fileName), file);
+  });
+
+  console.log(`Replaced bot folder with an total of ${botFiles.length} files`);
 }
 
 function UpdateEnvFile() {
@@ -34,7 +43,7 @@ function UpdateEnvFile() {
   console.log('Env file created');
 }
 
-UpdateBotFile();
+UpdateBotFolder();
 UpdateEnvFile();
 
 await import('../src/index.js');

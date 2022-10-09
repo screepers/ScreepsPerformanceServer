@@ -23,7 +23,7 @@ a. Change `STEAM_API_KEY` to your key
 b. If you want to auto login to one of the users you can change one of the USER Steam ids to yours and choose an room in `config.js`
 c. If you want to use the milestone result export integration then you need to possible update the `EXPORT_URL` to your bot api endpoint.
 
-2. Add your js bot to an folder inside the `bots` folder. Then update the `config.example.yml` your code and an `main.js` file should ben in the folder `dist`
+2. Add your js bot to an folder inside the `bots` folder. Then update the `config.example.yml` your code and an `main.js` file should be in the folder `dist`
 
 ### Running
 
