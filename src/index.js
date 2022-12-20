@@ -39,6 +39,10 @@ class Tester {
     if (process.argv.length > 2) {
       try {
         this.maxTicks = parseInt(process.argv[2], 10);
+        setTimeout(() => {
+          console.log('Timeout reached!');
+          process.exit(1);
+        }, this.maxTicks * 5000);
       } catch (e) {
         console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
       }
@@ -71,7 +75,7 @@ class Tester {
       const fails = Config.milestones.filter(
         (milestone) => milestone.required && milestone.tick < lastTick && !milestone.success,
       );
-      await Helper.sendResult(Config.milestones,status,controllerStatus, lastTick, start);
+      await Helper.sendResult(Config.milestones, status, controllerStatus, lastTick, start);
 
       fails.forEach((fail) => {
         console.log(`${lastTick} Milestone failed ${JSON.stringify(fail)}`);

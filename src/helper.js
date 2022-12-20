@@ -147,7 +147,6 @@ export default class Helper {
   static async startServer() {
     const dockerComposePath = join(__dirname, '../docker-compose.yml');
     console.log('Starting server...');
-    execSync(`docker-compose -f ${dockerComposePath} down`);
     const command = `docker-compose -f ${dockerComposePath} up`;
     const maxTime = new Promise((resolve) => {
       setTimeout(resolve, 300 * 1000, 'Timeout');
