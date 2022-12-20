@@ -5,22 +5,22 @@ services:
         volumes:
             - ./config.yml:/screeps/config.yml
             - ./bots:/screeps/bots
-            - ./logs:/logs
+            - ./logs:/logs:rw
             - screeps-data:/screeps
         ports:
             - 21025-21026:21025-21026
         restart: unless-stopped
-    mongo:
-        image: mongo
-        volumes:
-        - mongo-data:/data/db
-        restart: unless-stopped
+    # mongo:
+    #     image: mongo
+    #     volumes:
+    #     - mongo-data:/data/db
+    #     restart: unless-stopped
 
-    redis:
-        image: redis
-        volumes:
-        - redis-data:/data
-        restart: unless-stopped
+    # redis:
+    #     image: redis
+    #     volumes:
+    #     - redis-data:/data
+    #     restart: unless-stopped
 volumes:
     screeps-data:
     redis-data:

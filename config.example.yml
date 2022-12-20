@@ -2,7 +2,7 @@ steamKey: {{STEAM_KEY}}
 mods:
 - screepsmod-auth
 - screepsmod-admin-utils
-- screepsmod-server-stats
+- screepsmod-server-stats-test
 # - screepsmod-mongo  # You must install and start `mongodb` and `redis` before this mod will work
 bots:
   bot: ./bots/sampleBot
