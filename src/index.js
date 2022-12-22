@@ -18,18 +18,6 @@ process.once('SIGINT', () => {
   process.exit();
 });
 
-Config.trackedRooms.forEach((room) => {
-  status[room] = {
-    controller: null,
-    creeps: 0,
-    progress: 0,
-    level: 0,
-    structures: 0,
-  };
-
-  controllerStatus[room] = {};
-});
-
 class Tester {
   roomsSeen = {};
 
@@ -38,7 +26,32 @@ class Tester {
   constructor() {
     if (process.argv.length > 2) {
       try {
-        this.maxTicks = parseInt(process.argv[2], 10);
+        this.maxTicks = parseInt(process.argv[2]);
+        const maxBots = parseInt(process.argv[3]) || 5;
+
+        const rooms = Object.entries(Config.rooms);
+        if (rooms.length > maxBots) {
+          const sortedRooms = rooms.sort((a, b) => Config.trackedRooms.indexOf(a[0]) - Config.trackedRooms.indexOf(b[0]));
+          Config.rooms = {};
+
+          for (let i = 0; i < sortedRooms.length && i < maxBots; i++) {
+            const room = sortedRooms[i];
+            Config.rooms[room[0]] = room[1];
+          }
+        }
+
+        for (let i = 0; i < Config.trackedRooms.length && i < maxBots; i++) {
+          const room = Config.trackedRooms[i];
+          status[room] = {
+            controller: null,
+            creeps: 0,
+            progress: 0,
+            level: 0,
+            structures: 0,
+          };
+          controllerStatus[room] = {};
+        }
+
         setTimeout(() => {
           console.log('Timeout reached!');
           process.exit(1);
