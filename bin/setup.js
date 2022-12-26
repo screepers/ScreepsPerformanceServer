@@ -31,8 +31,8 @@ function UpdateBotFolder() {
 
 function UpdateEnvFile() {
   const exampleEnvFilePath = join(__dirname, '../.env.example');
-  const steamKey = process.argv[4];
-  const exportBaseUrl = process.argv[5];
+  const steamKey = process.argv[5];
+  const exportBaseUrl = process.argv[6];
   if (!steamKey) return;
 
   let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');

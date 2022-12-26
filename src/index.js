@@ -27,20 +27,32 @@ class Tester {
     if (process.argv.length > 2) {
       try {
         this.maxTicks = parseInt(process.argv[2]);
-        const maxBots = parseInt(process.argv[3]) || 5;
+        let maxBots = Math.max(parseInt(process.argv[3]), 1) || 5
 
-        const rooms = Object.entries(Config.rooms);
+        let rooms = Object.entries(Config.rooms);
         if (rooms.length > maxBots) {
-          const sortedRooms = rooms.sort((a, b) => Config.trackedRooms.indexOf(a[0]) - Config.trackedRooms.indexOf(b[0]));
+          const sortedRooms = rooms.sort((a, b) => Config.trackedRooms.indexOf(b[0]) - Config.trackedRooms.indexOf(a[0]));
           Config.rooms = {};
 
           for (let i = 0; i < sortedRooms.length && i < maxBots; i++) {
             const room = sortedRooms[i];
             Config.rooms[room[0]] = room[1];
           }
+
+          let trackedRooms = [];
+          rooms = Object.entries(Config.rooms);
+          for (let i = 0; i < Config.trackedRooms.length; i++) {
+            const room = Config.trackedRooms[i];
+
+            const a = rooms.find((r) => r[0] === room);
+            if (rooms.find((r) => r[0] === room)) {
+              trackedRooms.push(room);
+            }
+          }
+          Config.trackedRooms = trackedRooms;
         }
 
-        for (let i = 0; i < Config.trackedRooms.length && i < maxBots; i++) {
+        for (let i = 0; i < Config.trackedRooms.length; i++) {
           const room = Config.trackedRooms[i];
           status[room] = {
             controller: null,
@@ -55,7 +67,7 @@ class Tester {
         setTimeout(() => {
           console.log('Timeout reached!');
           process.exit(1);
-        }, this.maxTicks * 5000);
+        }, Math.min(this.maxTicks, 40000) * 5000);
       } catch (e) {
         console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
       }

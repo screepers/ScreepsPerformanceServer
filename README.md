@@ -39,7 +39,7 @@ npm run server
 After you see `Start the simulation with runtime (... ticks if choose selected tick run)` then go to `localhost:21025` and check out the progress of your bot.
 The default password is `password`.
 
-Its also possible to start using `npx`, to do this you need to do `npm i -g screeps-performance-server`, then `npx screeps-performance-server` with optional parameter to limit tick count  `npx screeps-performance-server 1000`
+Its also possible to start using `npx`, to do this you need to do `npm i -g screeps-performance-server`, then `npx screeps-performance-server` with optional parameter to limit tick count (default is infinity) following max bot count (default is 5 if missing)  `npx screeps-performance-server 10000 5`
 
 ## Milestones
 
