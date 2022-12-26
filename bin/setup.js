@@ -8,7 +8,7 @@ const __dirname = dirname(__filename);
 
 function UpdateBotFolder() {
   const botFolder = join(__dirname, '../bots/sampleBot');
-  const newBotFolder = process.argv[3];
+  const newBotFolder = process.argv[4];
   if (!newBotFolder) {
     console.log('Please provide a path to the bot file');
     throw new Error('No bot file provided');
