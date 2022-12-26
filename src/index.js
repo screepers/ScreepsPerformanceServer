@@ -25,7 +25,7 @@ class Tester {
 
   constructor() {
     try {
-      this.maxTicks = parseInt(process.argv[2]) | 50 * 1000;
+      this.maxTicks = parseInt(process.argv[2]) || 50 * 1000;
       let maxBots = Math.max(parseInt(process.argv[3]), 1) || 5
 
       let rooms = Object.entries(Config.rooms);
