@@ -24,53 +24,51 @@ class Tester {
   maxTicks = Infinity;
 
   constructor() {
-    if (process.argv.length > 2) {
-      try {
-        this.maxTicks = parseInt(process.argv[2]);
-        let maxBots = Math.max(parseInt(process.argv[3]), 1) || 5
+    try {
+      this.maxTicks = parseInt(process.argv[2]) | 50 * 1000;
+      let maxBots = Math.max(parseInt(process.argv[3]), 1) || 5
 
-        let rooms = Object.entries(Config.rooms);
-        if (rooms.length > maxBots) {
-          const sortedRooms = rooms.sort((a, b) => Config.trackedRooms.indexOf(b[0]) - Config.trackedRooms.indexOf(a[0]));
-          Config.rooms = {};
+      let rooms = Object.entries(Config.rooms);
+      if (rooms.length > maxBots) {
+        const sortedRooms = rooms.sort((a, b) => Config.trackedRooms.indexOf(b[0]) - Config.trackedRooms.indexOf(a[0]));
+        Config.rooms = {};
 
-          for (let i = 0; i < sortedRooms.length && i < maxBots; i++) {
-            const room = sortedRooms[i];
-            Config.rooms[room[0]] = room[1];
-          }
-
-          let trackedRooms = [];
-          rooms = Object.entries(Config.rooms);
-          for (let i = 0; i < Config.trackedRooms.length; i++) {
-            const room = Config.trackedRooms[i];
-
-            const a = rooms.find((r) => r[0] === room);
-            if (rooms.find((r) => r[0] === room)) {
-              trackedRooms.push(room);
-            }
-          }
-          Config.trackedRooms = trackedRooms;
+        for (let i = 0; i < sortedRooms.length && i < maxBots; i++) {
+          const room = sortedRooms[i];
+          Config.rooms[room[0]] = room[1];
         }
 
+        let trackedRooms = [];
+        rooms = Object.entries(Config.rooms);
         for (let i = 0; i < Config.trackedRooms.length; i++) {
           const room = Config.trackedRooms[i];
-          status[room] = {
-            controller: null,
-            creeps: 0,
-            progress: 0,
-            level: 0,
-            structures: 0,
-          };
-          controllerStatus[room] = {};
-        }
 
-        setTimeout(() => {
-          console.log('Timeout reached!');
-          process.exit(1);
-        }, Math.min(this.maxTicks, 40000) * 5000);
-      } catch (e) {
-        console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
+          const a = rooms.find((r) => r[0] === room);
+          if (rooms.find((r) => r[0] === room)) {
+            trackedRooms.push(room);
+          }
+        }
+        Config.trackedRooms = trackedRooms;
       }
+
+      for (let i = 0; i < Config.trackedRooms.length; i++) {
+        const room = Config.trackedRooms[i];
+        status[room] = {
+          controller: null,
+          creeps: 0,
+          progress: 0,
+          level: 0,
+          structures: 0,
+        };
+        controllerStatus[room] = {};
+      }
+
+      setTimeout(() => {
+        console.log('Timeout reached!');
+        process.exit(1);
+      }, Math.min(this.maxTicks, 40000) * 5000);
+    } catch (e) {
+      console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
     }
   }
 
