@@ -42,8 +42,6 @@ class Tester {
         rooms = Object.entries(Config.rooms);
         for (let i = 0; i < Config.trackedRooms.length; i++) {
           const room = Config.trackedRooms[i];
-
-          const a = rooms.find((r) => r[0] === room);
           if (rooms.find((r) => r[0] === room)) {
             trackedRooms.push(room);
           }

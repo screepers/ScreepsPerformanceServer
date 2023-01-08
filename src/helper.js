@@ -147,7 +147,7 @@ export default class Helper {
   static async startServer() {
     const dockerComposePath = join(__dirname, '../docker-compose.yml');
     console.log('Starting server...');
-    const command = `docker-compose -f ${dockerComposePath} down`;
+    const command = `docker-compose -f ${dockerComposePath} down --volumes --remove-orphans`;
     const command2 = `docker-compose -f ${dockerComposePath} up`;
     const maxTime = new Promise((resolve) => {
       setTimeout(resolve, 300 * 1000, 'Timeout');
@@ -257,6 +257,7 @@ export default class Helper {
       const text = await result.text();
       console.log(`> ${command}`);
       console.log(text);
+      await this.sleep(1)
       return text;
     } catch (error) {
       console.log(error)
