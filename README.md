@@ -2,6 +2,8 @@
 
 This is a Screeps server setup which has milestones & [Stats mod](https://github.com/The-International-Screeps-Bot/screepsmod-server-stats) build in.
 
+Credits for the original setup and baseplate go to [TooAngel](https://github.com/TooAngel)
+
 This includes data export of the milestones result, it includes the following points:
 
 1. Milestones
