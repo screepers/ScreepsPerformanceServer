@@ -150,7 +150,7 @@ export default class Helper {
     const command = `docker-compose -f ${dockerComposePath} down --volumes --remove-orphans`;
     const command2 = `docker-compose -f ${dockerComposePath} up`;
     const maxTime = new Promise((resolve) => {
-      setTimeout(resolve, 300 * 1000, 'Timeout');
+      setTimeout(resolve, 30 * 60 * 1000, 'Timeout');
     });
     const startServer = new Promise((resolve) => {
       execSync(command);
