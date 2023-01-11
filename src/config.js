@@ -1,5 +1,9 @@
 export default class Config {
+  static hostname = '127.0.0.1'
+  
   static cliPort = 21026;
+
+  static serverPort = 21025;
 
   static tickDuration = 100;
 

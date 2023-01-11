@@ -36,12 +36,8 @@ const filter = {
 };
 
 export default class Helper {
-  static hostname = '127.0.0.1';
-
-  static port = 21025;
-
   static setHostname(hostname) {
-    this.hostname = hostname;
+    Config.hostname = hostname;
   }
 
   /**
@@ -60,8 +56,8 @@ export default class Helper {
         email: room,
         password: 'password',
         protocol: 'http',
-        hostname: this.hostname,
-        port: this.port,
+        hostname: Config.hostname,
+        port: Config.serverPort,
         path: '/',
       });
 
@@ -251,7 +247,7 @@ export default class Helper {
 
   static async executeCliCommand(command) {
     try {
-      const result = await fetch('http://localhost:21026/cli', {
+      const result = await fetch(`http://localhost:${Config.cliPort}/cli`, {
         method: 'POST', body: command, headers: { 'Content-Type': 'text/plain' },
       });
       const text = await result.text();
