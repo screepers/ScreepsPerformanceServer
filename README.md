@@ -20,12 +20,18 @@ This includes data export of the milestones result, it includes the following po
 
 ### Setup
 
-1. Copy .env.example and rename it to .env
-a. Change `STEAM_API_KEY` to your key
-b. If you want to auto login to one of the users you can change one of the USER Steam ids to yours and choose an room in `config.js`
-c. If you want to use the milestone result export integration then you need to possible update the `EXPORT_URL` to your bot api endpoint.
+Default:
 
-2. Add your js bot to an folder inside the `bots` folder. Then update the `config.example.yml` your code and an `main.js` file should be in the folder `dist`
+1. Copy .env.example and rename it to .env
+2. Change `STEAM_API_KEY` to your key
+3. If you want to auto login to one of the users you can change one of the USER Steam ids to yours and choose an room in `config.js`
+4. If you want to use the milestone result export integration then you need to possible update the `EXPORT_URL` to your bot api endpoint
+
+Custom bot:
+
+1. Create new folder in `bots`
+2. Add your js bot files in it (must have main.js as entry file)
+3. Update `config.example.yml` bots.bot string to your bot path
 
 ### Running
 
