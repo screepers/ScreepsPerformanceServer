@@ -35,6 +35,8 @@ const filter = {
   },
 };
 
+const hostname = '127.0.0.1';
+
 export default class Helper {
   static setCliPort(port) {
     Config.cliPort = port;
@@ -60,7 +62,7 @@ export default class Helper {
         email: room,
         password: 'password',
         protocol: 'http',
-        hostname: Config.hostname,
+        hostname,
         port: Config.serverPort,
         path: '/',
       });
@@ -147,8 +149,8 @@ export default class Helper {
   static async startServer() {
     const dockerComposePath = join(__dirname, '../docker-compose.yml');
     console.log('Starting server...');
-    const command = `docker-compose -f ${dockerComposePath} down --volumes --remove-orphans`;
-    const command2 = `docker-compose -f ${dockerComposePath} up`;
+    const command = `docker-compose -f "${dockerComposePath}" down --volumes --remove-orphans`;
+    const command2 = `docker-compose -f "${dockerComposePath}" up`;
     const maxTime = new Promise((resolve) => {
       setTimeout(resolve, 30 * 60 * 1000, 'Timeout');
     });
@@ -251,7 +253,7 @@ export default class Helper {
 
   static async executeCliCommand(command) {
     try {
-      const result = await fetch(`http://localhost:${Config.cliPort}/cli`, {
+      const result = await fetch(`http://${hostname}:${Config.cliPort}/cli`, {
         method: 'POST', body: command, headers: { 'Content-Type': 'text/plain' },
       });
       const text = await result.text();

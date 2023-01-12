@@ -62,7 +62,7 @@ class Tester {
         controllerStatus[room] = {};
       }
 
-      if (Config.argv.cliPort) Helper.setCliPort(Config.argv.serverPort);
+      if (Config.argv.cliPort) Helper.setCliPort(Config.argv.cliPort);
       if (Config.argv.serverPort) Helper.setServerPort(Config.argv.serverPort);
 
       setTimeout(() => {
