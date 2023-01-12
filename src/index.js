@@ -85,7 +85,7 @@ class Tester {
     if (this.maxTicks > 0) {
       appendix = ` with runtime ${this.maxTicks} ticks`;
     }
-    console.log(`> Start the simulation${appendix}`);
+    console.log(`> Start the simulation${appendix} on port: ${Config.serverPort}`);
     if (this.maxTicks > 0) {
       while (lastTick === undefined || lastTick < this.maxTicks) {
         // eslint-disable-next-line no-await-in-loop
@@ -249,7 +249,7 @@ class Tester {
  * @return {undefined}
  */
 (async () => {
-  Setup();
+  await Setup();
   const tester = new Tester();
   await tester.run();
 

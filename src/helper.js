@@ -149,8 +149,10 @@ export default class Helper {
   static async startServer() {
     const dockerComposePath = join(__dirname, '../docker-compose.yml');
     console.log('Starting server...');
-    const command = `docker-compose -f "${dockerComposePath}" down --volumes --remove-orphans`;
-    const command2 = `docker-compose -f "${dockerComposePath}" up`;
+    const command = `docker-compose -f "${dockerComposePath}" -p ${Config.serverPort} down --volumes --remove-orphans`;
+    const command2 = `docker-compose -f "${dockerComposePath}" -p ${Config.serverPort} up`;
+    //  
+
     const maxTime = new Promise((resolve) => {
       setTimeout(resolve, 30 * 60 * 1000, 'Timeout');
     });
@@ -227,11 +229,11 @@ export default class Helper {
       const object = JSON.parse(file);
       commitName = object.commits[0].message;
     }
-    
+
     const newControllerStatus = [];
     Object.keys(controllerStatus).forEach((roomName) => {
       const controller = controllerStatus[roomName];
-      newControllerStatus.push({roomName, controller});
+      newControllerStatus.push({ roomName, controller });
     });
     controllerStatus = newControllerStatus;
 

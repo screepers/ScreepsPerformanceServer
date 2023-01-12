@@ -2,6 +2,7 @@
     "name": "screeps-performance-server",
     "dependencies": {
         "dotenv": "^16.0.1",
+        "get-port": "^6.1.2",
         "lodash": "^4.17.21",
         "ncp": "^2.0.0",
         "node-fetch": "^2.6.7",
@@ -10,7 +11,7 @@
         "screeps-api": "1.16.0"
     },
     "scripts": {
-        "server": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026",
+        "server": "node src/index.js --maxTicks=50000 --maxBots=5",
         "lint": "eslint **/*",
         "lint-fix": "eslint **/* --fix"
     },

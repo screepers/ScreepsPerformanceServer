@@ -2,12 +2,34 @@ import fs from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import minimist from 'minimist'
+import getPort, {portNumbers} from 'get-port';
+import Config from './config.js';
 
 const argv = minimist(process.argv.slice(2));
 console.dir(argv);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+async function getFreePorts() {
+  let serverPort = await getPort({ port: 21025 });
+  let cliPort = await getPort({ port: 21026 });
+
+  if (serverPort !== 21025 || cliPort !== 21026) {
+    let foundNewPorts = false;
+    while (!foundNewPorts) {
+      const newServerPort = await getPort({ port: portNumbers(50000, 51000) });
+      const newCliPort = await getPort({ port: newServerPort+1 });
+      if (newServerPort + 1 === newCliPort) {
+        serverPort = newServerPort;
+        cliPort = newCliPort;
+        foundNewPorts = true;
+      }
+    }
+  }
+
+  return { serverPort, cliPort };
+}
 
 function UpdateBotFolder() {
   const botFolder = join(__dirname, '../bots/dist');
@@ -46,20 +68,21 @@ function UpdateEnvFile() {
   console.log('Env file created');
 }
 
-function UpdateDockerComposeFile() {
+async function UpdateDockerComposeFile() {
   const exampleDockerComposeFile = join(__dirname, '../docker-compose.example.yml');
-  const serverPort = argv.serverPort || 21025
-  const cliPort = argv.cliPort || 21026
+  const ports = await getFreePorts();
+  Config.serverPort = ports.serverPort;
+  Config.cliPort = ports.cliPort;
 
   let exampleDockerComposeText = fs.readFileSync(exampleDockerComposeFile, 'utf8');
-  exampleDockerComposeText = exampleDockerComposeText.replaceAll('{{ serverPort }}', serverPort).replaceAll('{{ cliPort }}', cliPort);
+  exampleDockerComposeText = exampleDockerComposeText.replaceAll('{{ serverPort }}', ports.serverPort).replaceAll('{{ cliPort }}', ports.cliPort);
   const dockerComposeFile = join(__dirname, '../docker-compose.yml');
   fs.writeFileSync(dockerComposeFile, exampleDockerComposeText);
   console.log('Docker-compose file created');
 }
 
-export default function Setup() {
-    UpdateBotFolder();
-    UpdateEnvFile();
-    UpdateDockerComposeFile()
+export default async function Setup() {
+  UpdateBotFolder();
+  UpdateEnvFile();
+  await UpdateDockerComposeFile()
 }
