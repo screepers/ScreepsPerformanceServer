@@ -36,8 +36,12 @@ const filter = {
 };
 
 export default class Helper {
-  static setHostname(hostname) {
-    Config.hostname = hostname;
+  static setCliPort(port) {
+    Config.cliPort = port;
+  }
+
+  static setServerPort(port) {
+    Config.serverPort = port;
   }
 
   /**

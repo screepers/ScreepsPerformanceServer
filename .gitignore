@@ -1,5 +1,6 @@
 # Files
 config.yml
+docker-compose.yml
 .env
 
 # Folders

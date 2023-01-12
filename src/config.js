@@ -1,6 +1,9 @@
+import minimist from 'minimist'
+const argv = minimist(process.argv.slice(2));
+
 export default class Config {
-  static hostname = '127.0.0.1'
-  
+  static argv = argv;
+
   static cliPort = 21026;
 
   static serverPort = 21025;

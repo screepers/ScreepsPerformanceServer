@@ -1,5 +1,6 @@
 import Helper from './helper.js';
 import Config from './config.js';
+import Setup from "./setup.js"
 
 const controllerRooms = {};
 const status = {};
@@ -25,8 +26,8 @@ class Tester {
 
   constructor() {
     try {
-      this.maxTicks = parseInt(process.argv[2]) || 50 * 1000;
-      let maxBots = Math.max(parseInt(process.argv[3]), 1) || 5
+      this.maxTicks = Config.argv.maxTicks || 50 * 1000;
+      let maxBots = Math.max(Config.argv.maxBots, 1) || 5
 
       let rooms = Object.entries(Config.rooms);
       if (rooms.length > maxBots) {
@@ -60,6 +61,9 @@ class Tester {
         };
         controllerStatus[room] = {};
       }
+
+      if (Config.argv.cliPort) Helper.setCliPort(Config.argv.serverPort);
+      if (Config.argv.serverPort) Helper.setServerPort(Config.argv.serverPort);
 
       setTimeout(() => {
         console.log('Timeout reached!');
@@ -245,6 +249,8 @@ class Tester {
  * @return {undefined}
  */
 (async () => {
+  Setup();
   const tester = new Tester();
   await tester.run();
+
 })();

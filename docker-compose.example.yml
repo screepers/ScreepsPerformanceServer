@@ -8,8 +8,8 @@ services:
             - ./logs:/logs:rw
             - screeps-data:/screeps
         ports:
-            - 2100:21025/tcp
-            - 2099:21026
+            - {{ serverPort }}:21025/tcp
+            - {{ cliPort }}:21026
         environment:
             MONGO_HOST: mongo
             REDIS_HOST: redis
