@@ -149,8 +149,8 @@ export default class Helper {
   static async startServer() {
     const dockerComposePath = join(__dirname, '../docker-compose.yml');
     console.log('Starting server...');
-    const command = `docker-compose -f "${dockerComposePath}" -p ${Config.serverPort} down --volumes --remove-orphans`;
-    const command2 = `docker-compose -f "${dockerComposePath}" -p ${Config.serverPort} up`;
+    const command = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} down --volumes --remove-orphans`;
+    const command2 = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} up`;
     //  
 
     const maxTime = new Promise((resolve) => {

@@ -12,6 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 async function getFreePorts() {
+  if (argv.serverPort && argv.cliPort) return { serverPort: argv.serverPort, cliPort: argv.cliPort };
   let serverPort = await getPort({ port: 21025 });
   let cliPort = await getPort({ port: 21026 });
 
@@ -55,7 +56,7 @@ function UpdateBotFolder() {
 }
 
 function UpdateEnvFile() {
-  const exampleEnvFilePath = join(__dirname, '../.example.env');
+  const exampleEnvFilePath = join(__dirname, '../example.env');
   const steamKey = argv.steamKey;
   const exportBaseUrl = argv.exportBaseUrl;
   if (!steamKey) return;

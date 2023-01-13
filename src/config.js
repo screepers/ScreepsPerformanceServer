@@ -4,9 +4,9 @@ const argv = minimist(process.argv.slice(2));
 export default class Config {
   static argv = argv;
 
-  static cliPort = 21026;
-
   static serverPort = 21025;
+  
+  static cliPort = 21026;
 
   static tickDuration = 100;
 
