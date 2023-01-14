@@ -56,6 +56,9 @@ function UpdateBotFolder() {
 }
 
 function UpdateEnvFile() {
+  const envFile = join(__dirname, '../.env');
+  if (fs.existsSync(envFile) && !argv.force) return console.log('Env file already exists, use --force to overwrite it');
+
   const exampleEnvFilePath = join(__dirname, '../example.env');
   const steamKey = argv.steamKey;
   const exportBaseUrl = argv.exportBaseUrl;
@@ -64,12 +67,14 @@ function UpdateEnvFile() {
   let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
   exampleEnvText = exampleEnvText.replaceAll('http://steamcommunity.com/dev/apikey', steamKey);
   if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('localhost', exportBaseUrl);
-  const envFile = join(__dirname, '../.env');
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');
 }
 
 async function UpdateDockerComposeFile() {
+  const dockerComposeFile = join(__dirname, '../docker-compose.yml');
+  if (fs.existsSync(dockerComposeFile) && !argv.force) return console.log('Docker-compose file already exists, use --force to overwrite it');
+
   const exampleDockerComposeFile = join(__dirname, '../docker-compose.example.yml');
   const ports = await getFreePorts();
   Config.serverPort = ports.serverPort;
@@ -77,7 +82,6 @@ async function UpdateDockerComposeFile() {
 
   let exampleDockerComposeText = fs.readFileSync(exampleDockerComposeFile, 'utf8');
   exampleDockerComposeText = exampleDockerComposeText.replaceAll('{{ serverPort }}', ports.serverPort).replaceAll('{{ cliPort }}', ports.cliPort);
-  const dockerComposeFile = join(__dirname, '../docker-compose.yml');
   fs.writeFileSync(dockerComposeFile, exampleDockerComposeText);
   console.log('Docker-compose file created');
 }
