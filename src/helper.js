@@ -151,7 +151,7 @@ export default class Helper {
     console.log('Starting server...');
     const stopCommand = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} down --volumes --remove-orphans`;
     const upCommand = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} up`;
-    const upgradeCommand = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} exec screeps screeps-launcher upgrade`;
+    // const upgradeCommand = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} exec screeps screeps-launcher upgrade`;
 
     const maxTime = new Promise((resolve) => {
       setTimeout(resolve, 30 * 60 * 1000, 'Timeout');
@@ -162,7 +162,7 @@ export default class Helper {
       child.stdout.on('data', (data) => {
         console.log(data);
         if (data.includes('Started')) {
-          execSync(upgradeCommand);
+          // execSync(upgradeCommand);
           console.log('Started server');
           resolve();
         }
