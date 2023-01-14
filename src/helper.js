@@ -149,19 +149,20 @@ export default class Helper {
   static async startServer() {
     const dockerComposePath = join(__dirname, '../docker-compose.yml');
     console.log('Starting server...');
-    const command = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} down --volumes --remove-orphans`;
-    const command2 = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} up`;
-    //  
+    const stopCommand = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} down --volumes --remove-orphans`;
+    const upCommand = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} up`;
+    const upgradeCommand = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort} exec screeps screeps-launcher upgrade`;
 
     const maxTime = new Promise((resolve) => {
       setTimeout(resolve, 30 * 60 * 1000, 'Timeout');
     });
     const startServer = new Promise((resolve) => {
-      execSync(command);
-      const child = exec(command2);
+      execSync(stopCommand);
+      const child = exec(upCommand);
       child.stdout.on('data', (data) => {
         console.log(data);
         if (data.includes('Started')) {
+          execSync(upgradeCommand);
           console.log('Started server');
           resolve();
         }
