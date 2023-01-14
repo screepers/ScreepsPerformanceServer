@@ -165,7 +165,6 @@ export default class Helper {
         console.log(data);
         if (data.includes('Started')) {
           // execSync(upgradeCommand);
-          console.log('Started server');
           resolve();
         }
       });
@@ -180,7 +179,22 @@ export default class Helper {
       })
       .catch((result) => {
         console.error('error', { data: result });
+        return false;
       });
+  }
+
+  static async restartServer() {
+    return new Promise((resolve) => {
+      const restartCommand = `${Config.basicCommand} restart screeps`
+      const child = exec(restartCommand);
+      child.stdout.on('data', (data) => {
+        console.log(data);
+        if (data.includes('Started')) {
+          console.log('Started server');
+          resolve();
+        }
+      });
+    });
   }
 
   static initControllerID(event, status, controllerRooms) {

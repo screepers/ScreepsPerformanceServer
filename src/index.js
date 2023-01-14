@@ -1,7 +1,6 @@
 import Helper from './helper.js';
 import Config from './config.js';
 import Setup from "./setup.js"
-import { execSync } from 'child_process';
 
 const controllerRooms = {};
 const status = {};
@@ -225,10 +224,12 @@ class Tester {
   async run() {
     console.log('Starting...');
     await Helper.initServer();
-    await Helper.startServer();
+    if (!await Helper.startServer()) return;
+    await Helper.sleep(10);
+    console.log('Restarting...');
+    await Helper.restartServer();
     console.log('Waiting...');
     await Helper.sleep(10);
-    execSync(`${Config.basicCommand} restart screeps`);
     console.log('Starting... done');
     let exitCode = 0;
     try {
