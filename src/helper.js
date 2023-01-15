@@ -266,7 +266,7 @@ export default class Helper {
         },
       });
     } catch (error) {
-      console.log('Failed to end result to export url');
+      console.log('Failed to export status results to export url, high chance this isn\'t in use');
     }
   }
 
