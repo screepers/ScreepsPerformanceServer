@@ -136,7 +136,7 @@ export default class Helper {
     // Copy config file to non example file
     fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
     // Read and replace config file
-    const config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('{{STEAM_KEY}}', process.env.STEAM_API_KEY || 'unknown');
+    const config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('{{ STEAM_KEY }}', process.env.STEAM_API_KEY || 'unknown').replace('{{ RELAY_PORT }}', process.env.RELAY_PORT);
     fs.writeFileSync(configFilename, config);
   }
 
