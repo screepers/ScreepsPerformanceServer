@@ -184,7 +184,7 @@ export default class Helper {
   }
 
   static async restartServer() {
-    return new Promise((resolve) => {
+    return await new Promise((resolve) => {
       const restartCommand = `${Config.basicCommand} restart screeps`
       const child = exec(restartCommand);
       child.stdout.on('data', (data) => {

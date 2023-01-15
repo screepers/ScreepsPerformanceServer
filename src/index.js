@@ -226,8 +226,8 @@ class Tester {
     await Helper.initServer();
     if (!await Helper.startServer()) return;
     await Helper.sleep(10);
-    console.log('Restarting...');
-    await Helper.restartServer();
+    // console.log('Restarting...');
+    // await Helper.restartServer();
     console.log('Waiting...');
     await Helper.sleep(10);
     console.log('Starting... done');
