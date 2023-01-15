@@ -22,11 +22,11 @@ process.once('SIGINT', () => {
 class Tester {
   roomsSeen = {};
 
-  maxTicks = Infinity;
+  maxTicks;
 
   constructor() {
     try {
-      this.maxTicks = Config.argv.maxTicks || 50 * 1000;
+      this.maxTicks = Config.argv.maxTicks !== "undefined" ? Config.argv.maxTicks || 50 * 1000 : 50 * 1000;
       let maxBots = Math.max(Config.argv.maxBots, 1) || 5
 
       let rooms = Object.entries(Config.rooms);

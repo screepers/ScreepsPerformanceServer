@@ -25,12 +25,12 @@
     "bin": {
         "screeps-performance-server": "./bin/setup.js"
     },
-    "version": "1.5.3",
+    "version": "1.5.5",
     "files": [
         "src",
         "bots",
-        ".env.example",
+        "example.env",
         "config.example.yml",
-        "docker-compose.yml"
+        "docker-compose.example.yml"
     ]
 }
