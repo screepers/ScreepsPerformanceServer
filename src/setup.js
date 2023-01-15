@@ -63,10 +63,9 @@ function UpdateEnvFile() {
   const steamKey = argv.steamKey;
   const exportBaseUrl = argv.exportBaseUrl;
   const relayPort = argv.relayPort;
-  if (!steamKey) return;
 
   let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
-  exampleEnvText = exampleEnvText.replaceAll('http://steamcommunity.com/dev/apikey', steamKey);
+  if (steamKey) exampleEnvText = exampleEnvText.replaceAll('http://steamcommunity.com/dev/apikey', steamKey);
   if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('localhost', exportBaseUrl);
   if (relayPort) exampleEnvText = exampleEnvText.replaceAll('=2003', `=${relayPort}`);
   fs.writeFileSync(envFile, exampleEnvText);
