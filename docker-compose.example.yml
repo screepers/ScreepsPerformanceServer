@@ -5,7 +5,6 @@ services:
         volumes:
             - ./config.yml:/screeps/config.yml
             - ./bots:/screeps/bots
-            - ./logs:/logs:rw
             - screeps-data:/screeps
         ports:
             - {{ serverPort }}:21025/tcp
