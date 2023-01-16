@@ -11,8 +11,8 @@
         "screeps-api": "1.16.0"
     },
     "scripts": {
-        "server": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --relayPort=2003",
-        "server-test": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --relayPort=2003 --force",
+        "server": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026",
+        "server-test": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force",
         "lint": "eslint **/*",
         "lint-fix": "eslint **/* --fix"
     },

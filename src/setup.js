@@ -68,7 +68,7 @@ function UpdateEnvFile() {
   let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
   if (steamKey) exampleEnvText = exampleEnvText.replaceAll('http://steamcommunity.com/dev/apikey', steamKey);
   if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('localhost', exportBaseUrl);
-  if (relayPort) exampleEnvText = exampleEnvText.replaceAll('=2003', `=${relayPort}`);
+  if (relayPort) exampleEnvText = exampleEnvText.replaceAll('=undefined', `=${relayPort}`);
   if (force) exampleEnvText = exampleEnvText.replaceAll('=false', `=${force}`);
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');
