@@ -12,7 +12,6 @@ import Config from './config.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import * as dotenv from 'dotenv';
-dotenv.config({ path: join(__dirname, '../.env') });
 
 const filter = {
   controller: (o) => {
@@ -128,16 +127,20 @@ export default class Helper {
   }
 
   static async initServer() {
+    dotenv.config({ path: join(__dirname, '../.env') });
     console.log('Initializing server...');
     const configFilename = join(__dirname, '../config.yml');
 
-    // Delete old config file
-    if (fs.existsSync(configFilename)) fs.unlinkSync(configFilename);
+    if (fs.existsSync(configFilename)) {
+      if (process.env.FORCE) fs.unlinkSync(configFilename);
+      else return
+    }
     // Copy config file to non example file
     fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
     // Read and replace config file
     const config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('{{ STEAM_KEY }}', process.env.STEAM_API_KEY || 'unknown').replace('{{ RELAY_PORT }}', process.env.RELAY_PORT);
     fs.writeFileSync(configFilename, config);
+    console.log("Written config.yml")
   }
 
   /**
