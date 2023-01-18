@@ -10,8 +10,6 @@ export default class Config {
 
   static tickDuration = 100;
 
-  static userCpu = 105;
-
   static playerRooms = { W1N1: '76561198255104702', W1N7: '76561198178215469', W2N5: '76561198092401383' };
 
   static rooms = {

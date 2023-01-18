@@ -82,7 +82,7 @@ export default class Helper {
 
   static async spawnBot(botName, roomName, roomsSeen) {
     console.log(`Spawn ${botName} in ${roomName}`);
-    await this.executeCliCommand(`bots.spawn('${botName}', '${roomName}', {username: '${roomName}', auto:'true',cpu:'${Config.userCpu}'})\r\n`);
+    await this.executeCliCommand(`bots.spawn('${botName}', '${roomName}', {username: '${roomName}', auto:'true'})\r\n`);
     await this.setPassword(roomName, roomsSeen, Config.playerRooms);
   }
 
