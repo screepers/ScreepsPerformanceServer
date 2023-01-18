@@ -187,17 +187,8 @@ export default class Helper {
   }
 
   static async restartServer() {
-    return await new Promise((resolve) => {
       const restartCommand = `${Config.basicCommand} restart screeps`
-      const child = exec(restartCommand);
-      child.stdout.on('data', (data) => {
-        console.log(data);
-        if (data.includes('Started')) {
-          console.log('Started server');
-          resolve();
-        }
-      });
-    });
+      exec(restartCommand);
   }
 
   static initControllerID(event, status, controllerRooms) {

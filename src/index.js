@@ -196,11 +196,14 @@ class Tester {
   async execute() {
     // eslint-disable-next-line no-async-promise-executor
     const execute = new Promise(async (resolve, reject) => {
-      await Helper.executeCliCommand('system.resetAllData()');
       await Helper.executeCliCommand('system.pauseSimulation()');
       await Helper.executeCliCommand(`system.setTickDuration(${Config.tickDuration})`);
       await Helper.executeCliCommand('utils.removeBots()');
       await Helper.executeCliCommand('utils.setShardName("performanceServer")');
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W0N0', x: 0, y:0 })");
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N10', x: 0, y:0 })");
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N0', x: 0, y:0 })");
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W0N10', x: 0, y:0 })");
 
       const spawnBots = [];
       const rooms = Object.entries(Config.rooms);
@@ -215,6 +218,7 @@ class Tester {
       if (Object.keys(Config.rooms).length === Object.keys(this.roomsSeen).length) {
         Helper.followLog(Config.trackedRooms, Tester.statusUpdater);
         await Helper.executeCliCommand('system.resumeSimulation()');
+        console.log('Server ready!');
       }
       this.checkForSuccess(resolve, reject);
     });
@@ -225,12 +229,11 @@ class Tester {
     console.log('Starting...');
     await Helper.initServer();
     if (!await Helper.startServer()) return;
+    await Helper.sleep(20);
+    await Helper.executeCliCommand('mongo.importDB()');
     await Helper.sleep(10);
-    // console.log('Restarting...');
-    // await Helper.restartServer();
-    console.log('Waiting...');
-    await Helper.sleep(10);
-    console.log('Starting... done');
+    await Helper.restartServer();
+    await Helper.sleep(15);
     let exitCode = 0;
     try {
       await this.execute();
