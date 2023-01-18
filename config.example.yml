@@ -4,7 +4,7 @@ mods:
 - screepsmod-admin-utils
 - screepsmod-server-stats-test
 - screepsmod-mongo
-- screepsmod-market
+#- screepsmod-market needs more testing I propose try dynamic first
 - screepsmod-dynamicmarket
 bots:
   bot: ./bots/dist
