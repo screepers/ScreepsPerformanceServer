@@ -226,7 +226,6 @@ class Tester {
   }
 
   async run() {
-    console.log('Starting...');
     await Helper.initServer();
     if (!await Helper.startServer()) return;
     await Helper.sleep(20);

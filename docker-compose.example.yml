@@ -13,17 +13,25 @@ services:
             MONGO_HOST: mongo
             REDIS_HOST: redis
         restart: unless-stopped
+
     mongo:
         image: mongo
         volumes:
         - mongo-data:/data/db
         restart: unless-stopped
+        logging:
+            driver: "none"
 
     redis:
         image: redis
+        logging:
+            driver: "none"
         volumes:
         - redis-data:/data
         restart: unless-stopped
+        logging:
+            driver: "none"
+            
 volumes:
     screeps-data:
     redis-data:
