@@ -151,7 +151,7 @@ export default class Helper {
       */
   static async startServer() {
     const dockerComposePath = join(__dirname, '../docker-compose.yml');
-    const basicCommand = `docker-compose -f "${dockerComposePath}" -p screeps-server-${Config.serverPort}`;
+    const basicCommand = `docker-compose -f "${dockerComposePath}"`;
     Config.basicCommand = basicCommand;
     console.log('Starting server...');
     const stopCommand = `${basicCommand} down --volumes --remove-orphans`;

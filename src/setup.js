@@ -85,6 +85,7 @@ async function UpdateDockerComposeFile() {
 
   let exampleDockerComposeText = fs.readFileSync(exampleDockerComposeFile, 'utf8');
   exampleDockerComposeText = exampleDockerComposeText.replaceAll('{{ serverPort }}', ports.serverPort).replaceAll('{{ cliPort }}', ports.cliPort);
+  if (ports.serverPort) exampleDockerComposeText = exampleDockerComposeText.replaceAll('name: \"screeps-server\"', `name: \"screeps-server\-${ports.serverPort}"`);
   fs.writeFileSync(dockerComposeFile, exampleDockerComposeText);
   console.log('Docker-compose file created');
 }
