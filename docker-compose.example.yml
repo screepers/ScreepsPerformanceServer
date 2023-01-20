@@ -13,17 +13,23 @@ services:
             MONGO_HOST: mongo
             REDIS_HOST: redis
         restart: unless-stopped
+        logging:
+               driver: "local"
     mongo:
         image: mongo
         volumes:
         - mongo-data:/data/db
         restart: unless-stopped
+        logging:
+            driver: "local"
 
     redis:
         image: redis
         volumes:
         - redis-data:/data
         restart: unless-stopped
+        logging:
+            driver: "local"
 volumes:
     screeps-data:
     redis-data:
