@@ -1,5 +1,4 @@
 version: '3'
-name: "screeps-server"
 services:
     screeps:
         image: screepers/screeps-launcher

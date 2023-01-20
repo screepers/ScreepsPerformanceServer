@@ -8,6 +8,7 @@ import Config from './config.js';
 const argv = minimist(process.argv.slice(2));
 console.dir(argv);
 
+let ports = {}
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -70,6 +71,7 @@ function UpdateEnvFile() {
   if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('localhost', exportBaseUrl);
   if (relayPort) exampleEnvText = exampleEnvText.replaceAll('=undefined', `=${relayPort}`);
   if (force) exampleEnvText = exampleEnvText.replaceAll('=false', `=${force}`);
+  if (ports.serverPort) exampleEnvText = exampleEnvText.replaceAll('COMPOSE_PROJECT_NAME=screeps-server', `COMPOSE_PROJECT_NAME=screeps-server-${ports.serverPort}`);
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');
 }
@@ -79,18 +81,17 @@ async function UpdateDockerComposeFile() {
   if (fs.existsSync(dockerComposeFile) && !argv.force) return console.log('Docker-compose file already exists, use --force to overwrite it');
 
   const exampleDockerComposeFile = join(__dirname, '../docker-compose.example.yml');
-  const ports = await getFreePorts();
   Config.serverPort = ports.serverPort;
   Config.cliPort = ports.cliPort;
 
   let exampleDockerComposeText = fs.readFileSync(exampleDockerComposeFile, 'utf8');
   exampleDockerComposeText = exampleDockerComposeText.replaceAll('{{ serverPort }}', ports.serverPort).replaceAll('{{ cliPort }}', ports.cliPort);
-  if (ports.serverPort) exampleDockerComposeText = exampleDockerComposeText.replaceAll('name: \"screeps-server\"', `name: \"screeps-server\-${ports.serverPort}"`);
   fs.writeFileSync(dockerComposeFile, exampleDockerComposeText);
   console.log('Docker-compose file created');
 }
 
 export default async function Setup() {
+  ports = await getFreePorts();
   UpdateBotFolder();
   UpdateEnvFile();
   await UpdateDockerComposeFile()
