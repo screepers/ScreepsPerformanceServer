@@ -12,6 +12,8 @@ import Config from './config.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import * as dotenv from 'dotenv';
+const dockerComposePath = join(__dirname, '../docker-compose.yml');
+const basicCommand = `docker-compose -f "${dockerComposePath}"`;
 
 const filter = {
   controller: (o) => {
@@ -137,6 +139,7 @@ export default class Helper {
     }
     // Copy config file to non example file
     fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
+
     // Read and replace config file
     const config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('steamKey: unknown', `steamKey: ${process.env.STEAM_API_KEY || 'unknown'}`).replace('relayPort: undefined', `relayPort: ${process.argv.replayPort}`);
     fs.writeFileSync(configFilename, config);
@@ -150,26 +153,26 @@ export default class Helper {
       * @return {object}
       */
   static async startServer() {
-    const dockerComposePath = join(__dirname, '../docker-compose.yml');
-    const basicCommand = `docker-compose -f "${dockerComposePath}"`;
-    Config.basicCommand = basicCommand;
-    console.log('Starting server...');
     const stopCommand = `${basicCommand} down --volumes --remove-orphans`;
     const upCommand = `${basicCommand} up`;
-    // const upgradeCommand = `${basicCommand} exec screeps screeps-launcher upgrade`;
+    const serverLogsCommand = `${basicCommand} logs -f screeps`;
 
     const maxTime = new Promise((resolve) => {
       setTimeout(resolve, 30 * 60 * 1000, 'Timeout');
     });
-    const startServer = new Promise((resolve) => {
-      execSync(stopCommand);
-      const child = exec(upCommand);
+
+    const startServer = new Promise(async (resolve) => {
+      console.log('\r\nProcess: Starting server...');
+      console.log('Stopping server...')
+      execSync(stopCommand, { stdio: 'ignore' });
+      console.log('Starting server, this will take a while...')
+      exec(upCommand);
+      await this.sleep(10)
+      const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {
-        console.log(data);
-        if (data.includes('Started')) {
-          // execSync(upgradeCommand);
-          resolve();
-        }
+        if (data.includes('[main] exec: screeps-engine-main')) {
+            resolve();
+          }
       });
     });
     return Promise.race([startServer, maxTime])
@@ -187,17 +190,37 @@ export default class Helper {
   }
 
   static async restartServer() {
-    return await new Promise((resolve) => {
-      const restartCommand = `${Config.basicCommand} restart screeps`
-      const child = exec(restartCommand);
+    const restartCommand = `${basicCommand} restart screeps`;
+    const serverLogsCommand = `${basicCommand} logs -f screeps`;
+
+    const maxTime = new Promise((resolve) => {
+      setTimeout(resolve, 30 * 60 * 1000, 'Timeout');
+    });
+
+    const restartServer = new Promise(async (resolve) => {
+      console.log('\r\nProcess: Restart server...')
+      console.log('Restarting server...\r\n')
+      exec(restartCommand);
+      await this.sleep(10)
+      const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {
-        console.log(data);
-        if (data.includes('Started')) {
-          console.log('Started server');
-          resolve();
-        }
+        if (data.includes('[main] exec: screeps-engine-main')) {
+            resolve();
+          }
       });
     });
+    return Promise.race([restartServer, maxTime])
+      .then((result) => {
+        if (result === 'Timeout') {
+          console.log('Timeout starting server!');
+          return false;
+        }
+        return true;
+      })
+      .catch((result) => {
+        console.error('error', { data: result });
+        return false;
+      });
   }
 
   static initControllerID(event, status, controllerRooms) {
