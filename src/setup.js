@@ -64,13 +64,13 @@ function UpdateEnvFile() {
   const steamKey = argv.steamKey;
   const exportBaseUrl = argv.exportBaseUrl;
   const relayPort = argv.relayPort;
-  const force = argv.force;
+  const force = argv.force === 'true';
 
-  let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
+  let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8')
+  .replaceAll('FORCE=false', `FORCE=${force}`);
   if (steamKey) exampleEnvText = exampleEnvText.replaceAll('http://steamcommunity.com/dev/apikey', steamKey);
-  if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('localhost', exportBaseUrl);
-  if (relayPort) exampleEnvText = exampleEnvText.replaceAll('=undefined', `=${relayPort}`);
-  if (force) exampleEnvText = exampleEnvText.replaceAll('=false', `=${force}`);
+  if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('EXPORT_URL=localhost', `EXPORT_URL=${exportBaseUrl}`);
+  if (relayPort) exampleEnvText = exampleEnvText.replaceAll('RELAY_PORT=undefined', `RELAY_PORT=${relayPort}`);
   if (ports.serverPort) exampleEnvText = exampleEnvText.replaceAll('COMPOSE_PROJECT_NAME=screeps-server', `COMPOSE_PROJECT_NAME=screeps-server-${ports.serverPort}`);
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');
@@ -85,7 +85,9 @@ async function UpdateDockerComposeFile() {
   Config.cliPort = ports.cliPort;
 
   let exampleDockerComposeText = fs.readFileSync(exampleDockerComposeFile, 'utf8');
-  exampleDockerComposeText = exampleDockerComposeText.replaceAll('{{ serverPort }}', ports.serverPort).replaceAll('{{ cliPort }}', ports.cliPort);
+  exampleDockerComposeText = exampleDockerComposeText
+  .replaceAll('- 21025:21025/tcp', `- ${ports.serverPort}:21025/tcp`)
+  .replaceAll('- 21026:21026', `- ${ports.cliPort}:21026`);
   fs.writeFileSync(dockerComposeFile, exampleDockerComposeText);
   console.log('Docker-compose file created');
 }
