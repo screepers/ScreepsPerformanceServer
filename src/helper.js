@@ -132,13 +132,13 @@ export default class Helper {
     const configFilename = join(__dirname, '../config.yml');
 
     if (fs.existsSync(configFilename)) {
-      if (process.env.FORCE) fs.unlinkSync(configFilename);
+      if (Config.argv.force) fs.unlinkSync(configFilename);
       else return
     }
     // Copy config file to non example file
     fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
     // Read and replace config file
-    const config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('{{ STEAM_KEY }}', process.env.STEAM_API_KEY || 'unknown').replace('{{ RELAY_PORT }}', process.env.RELAY_PORT);
+    const config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('steamKey: unknown', `steamKey: ${process.env.STEAM_API_KEY || 'unknown'}`).replace('relayPort: undefined', `relayPort: ${process.argv.replayPort}`);
     fs.writeFileSync(configFilename, config);
     console.log("Written config.yml")
   }
@@ -242,7 +242,7 @@ export default class Helper {
   }
 
   static async sendResult(milestones, status, controllerStatus, lastTick, start) {
-    if (!process.env.EXPORT_URL) return;
+    if (!Config.argv.exportUrl) return;
     let commitName = 'localhost';
     if (process.env.GITHUB_EVENT_PATH) {
       const file = fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8');

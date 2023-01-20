@@ -63,14 +63,10 @@ function UpdateEnvFile() {
   const exampleEnvFilePath = join(__dirname, '../example.env');
   const steamKey = argv.steamKey;
   const exportBaseUrl = argv.exportBaseUrl;
-  const relayPort = argv.relayPort;
-  const force = argv.force === 'true';
 
-  let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8')
-  .replaceAll('FORCE=false', `FORCE=${force}`);
+  let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
   if (steamKey) exampleEnvText = exampleEnvText.replaceAll('http://steamcommunity.com/dev/apikey', steamKey);
-  if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('EXPORT_URL=localhost', `EXPORT_URL=${exportBaseUrl}`);
-  if (relayPort) exampleEnvText = exampleEnvText.replaceAll('RELAY_PORT=undefined', `RELAY_PORT=${relayPort}`);
+  if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('EXPORT_URL=http://localhost:10001/serverResult', `EXPORT_URL=${exportBaseUrl}`);
   if (ports.serverPort) exampleEnvText = exampleEnvText.replaceAll('COMPOSE_PROJECT_NAME=screeps-server', `COMPOSE_PROJECT_NAME=screeps-server-${ports.serverPort}`);
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');

@@ -1,4 +1,4 @@
-steamKey: {{ STEAM_KEY }}
+steamKey: unknown
 mods:
 - screepsmod-auth
 - screepsmod-admin-utils
@@ -17,7 +17,7 @@ serverStats:
   roomsObjectsStats: 2
   roomsIntentsStats: 2
   runEveryTicks: 1
-  relayPort: {{ RELAY_PORT }}
+  relayPort: undefined
 env:
   backend:
     CLI_HOST: 0.0.0.0
