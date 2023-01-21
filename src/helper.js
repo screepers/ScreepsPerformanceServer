@@ -12,6 +12,7 @@ import Config from './config.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import * as dotenv from 'dotenv';
+dotenv.config({ path: join(__dirname, '../.env') });
 const dockerComposePath = join(__dirname, '../docker-compose.yml');
 const basicCommand = `docker-compose -f "${dockerComposePath}"`;
 
@@ -126,27 +127,6 @@ export default class Helper {
   static sleep(seconds) {
     // eslint-disable-next-line no-promise-executor-return
     return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
-  }
-
-  static async initServer() {
-    dotenv.config({ path: join(__dirname, '../.env') });
-    console.log('Initializing server...');
-    const configFilename = join(__dirname, '../config.yml');
-
-    if (fs.existsSync(configFilename)) {
-      if (Config.argv.force) fs.unlinkSync(configFilename);
-      else return
-    }
-    // Copy config file to non example file
-    fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
-
-    // Read and replace config file
-    let config = fs.readFileSync(configFilename, { encoding: 'utf8' });
-    if (Config.argv.steamKey) config = config.replace('steamKey: unknown', `steamKey: ${Config.argv.steamKey}`);
-    if (Config.argv.relayPort) config = config.replace('relayPort: undefined', `relayPort: ${Config.argv.relayPort}`);
-    if (Config.argv.disableMongo) config = config.replace('- screepsmod-mongo', '# - screepsmod-mongo');
-    fs.writeFileSync(configFilename, config);
-    console.log("Written config.yml")
   }
 
   /**

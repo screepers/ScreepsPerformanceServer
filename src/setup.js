@@ -56,6 +56,25 @@ function UpdateBotFolder() {
   console.log(`Replaced bot folder with an total of ${botFiles.length} files`);
 }
 
+function updateConfigFile() {
+  const configFilename = join(__dirname, '../config.yml');
+
+  if (fs.existsSync(configFilename)) {
+    if (Config.argv.force) fs.unlinkSync(configFilename);
+    else return
+  }
+  // Copy config file to non example file
+  fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
+
+  // Read and replace config file
+  let config = fs.readFileSync(configFilename, { encoding: 'utf8' });
+  if (Config.argv.steamKey) config = config.replace('steamKey: unknown', `steamKey: ${Config.argv.steamKey}`);
+  if (Config.argv.relayPort) config = config.replace('relayPort: undefined', `relayPort: ${Config.argv.relayPort}`);
+  if (Config.argv.disableMongo) config = config.replace('- screepsmod-mongo', '# - screepsmod-mongo');
+  fs.writeFileSync(configFilename, config);
+  console.log("Config.yml file created")
+}
+
 function UpdateEnvFile() {
   const envFile = join(__dirname, '../.env');
   if (fs.existsSync(envFile) && !argv.force) return console.log('Env file already exists, use --force to overwrite it');
@@ -92,6 +111,7 @@ async function UpdateDockerComposeFile() {
 
 export default async function Setup() {
   ports = await getFreePorts();
+  updateConfigFile();
   UpdateBotFolder();
   UpdateEnvFile();
   await UpdateDockerComposeFile()

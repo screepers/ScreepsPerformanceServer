@@ -228,7 +228,6 @@ class Tester {
   }
 
   async run() {
-    await Helper.initServer();
     if (!await Helper.startServer()) return;
     await Helper.sleep(10);
     if (!await Helper.restartServer()) return;
