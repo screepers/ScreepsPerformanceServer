@@ -231,8 +231,10 @@ class Tester {
     await Helper.sleep(20);
     await Helper.executeCliCommand('mongo.importDB()');
     await Helper.sleep(10);
-    await Helper.restartServer();
-    await Helper.sleep(15);
+    if (!await Helper.restartServer()) return;
+    await Helper.sleep(10);
+
+    console.log('Starting... done');
     let exitCode = 0;
     try {
       await this.execute();

@@ -7,21 +7,21 @@ services:
             - ./bots:/screeps/bots
             - screeps-data:/screeps
         ports:
-            - {{ serverPort }}:21025/tcp
-            - {{ cliPort }}:21026
+            - 21025:21025/tcp
+            - 21026:21026
         environment:
             MONGO_HOST: mongo
             REDIS_HOST: redis
         restart: unless-stopped
-
+        logging:
+               driver: "local"
     mongo:
         image: mongo
         volumes:
         - mongo-data:/data/db
         restart: unless-stopped
         logging:
-            driver: "none"
-
+            driver: "local"
     redis:
         image: redis
         logging:
@@ -30,8 +30,7 @@ services:
         - redis-data:/data
         restart: unless-stopped
         logging:
-            driver: "none"
-            
+            driver: "local"
 volumes:
     screeps-data:
     redis-data:
