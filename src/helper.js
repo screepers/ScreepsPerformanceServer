@@ -141,7 +141,10 @@ export default class Helper {
     fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
 
     // Read and replace config file
-    const config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('steamKey: unknown', `steamKey: ${process.env.STEAM_API_KEY || 'unknown'}`).replace('relayPort: undefined', `relayPort: ${process.argv.replayPort}`);
+    let config = fs.readFileSync(configFilename, { encoding: 'utf8' });
+    if (Config.argv.steamKey) config = config.replace('steamKey: unknown', `steamKey: ${Config.argv.steamKey}`);
+    if (Config.argv.relayPort) config = config.replace('relayPort: undefined', `relayPort: ${Config.argv.relayPort}`);
+    if (Config.argv.disableMongo) config = config.replace('- screepsmod-mongo', '# - screepsmod-mongo');
     fs.writeFileSync(configFilename, config);
     console.log("Written config.yml")
   }
@@ -282,7 +285,7 @@ export default class Helper {
     controllerStatus = newControllerStatus;
 
     try {
-      await fetch(process.env.EXPORT_URL, {
+      await fetch(Config.argv.exportUrl, {
         method: 'POST',
         body: JSON.stringify({
           milestones, lastTick, status, commitName, startTime: start, endTime: Date.now(), controllerStatus

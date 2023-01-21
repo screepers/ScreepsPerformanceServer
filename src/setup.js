@@ -1,10 +1,10 @@
 import fs from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import minimist from 'minimist'
 import getPort, {portNumbers} from 'get-port';
 import Config from './config.js';
 
+import minimist from 'minimist'
 const argv = minimist(process.argv.slice(2));
 console.dir(argv);
 
@@ -63,9 +63,11 @@ function UpdateEnvFile() {
   const exampleEnvFilePath = join(__dirname, '../example.env');
   const steamKey = argv.steamKey;
   const exportBaseUrl = argv.exportBaseUrl;
+  const disableMongo = argv.disableMongo;
 
   let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
   if (steamKey) exampleEnvText = exampleEnvText.replaceAll('http://steamcommunity.com/dev/apikey', steamKey);
+  if (disableMongo) exampleEnvText = exampleEnvText.replaceAll('DISABLE_MONGO=false', `DISABLE_MONGO=${disableMongo}`);
   if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('EXPORT_URL=http://localhost:10001/serverResult', `EXPORT_URL=${exportBaseUrl}`);
   if (ports.serverPort) exampleEnvText = exampleEnvText.replaceAll('COMPOSE_PROJECT_NAME=screeps-server', `COMPOSE_PROJECT_NAME=screeps-server-${ports.serverPort}`);
   fs.writeFileSync(envFile, exampleEnvText);

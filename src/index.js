@@ -196,10 +196,12 @@ class Tester {
   async execute() {
     // eslint-disable-next-line no-async-promise-executor
     const execute = new Promise(async (resolve, reject) => {
+      await Helper.executeCliCommand('system.resetAllData()');
       await Helper.executeCliCommand('system.pauseSimulation()');
       await Helper.executeCliCommand(`system.setTickDuration(${Config.tickDuration})`);
       await Helper.executeCliCommand('utils.removeBots()');
       await Helper.executeCliCommand('utils.setShardName("performanceServer")');
+
       await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W0N0', x: 0, y:0 })");
       await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N10', x: 0, y:0 })");
       await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N0', x: 0, y:0 })");
@@ -228,8 +230,6 @@ class Tester {
   async run() {
     await Helper.initServer();
     if (!await Helper.startServer()) return;
-    await Helper.sleep(20);
-    await Helper.executeCliCommand('mongo.importDB()');
     await Helper.sleep(10);
     if (!await Helper.restartServer()) return;
     await Helper.sleep(10);
