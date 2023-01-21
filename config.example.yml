@@ -1,4 +1,4 @@
-steamKey: unknown
+steamKey: http://steamcommunity.com/dev/apikey
 mods:
 - screepsmod-auth
 - screepsmod-admin-utils

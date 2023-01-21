@@ -68,7 +68,7 @@ function updateConfigFile() {
 
   // Read and replace config file
   let config = fs.readFileSync(configFilename, { encoding: 'utf8' });
-  if (Config.argv.steamKey) config = config.replace('steamKey: unknown', `steamKey: ${Config.argv.steamKey}`);
+  if (Config.argv.steamKey) config = config.replace('steamKey: http://steamcommunity.com/dev/apikey', `steamKey: ${Config.argv.steamKey}`);
   if (Config.argv.relayPort) config = config.replace('relayPort: undefined', `relayPort: ${Config.argv.relayPort}`);
   if (Config.argv.disableMongo) config = config.replace('- screepsmod-mongo', '# - screepsmod-mongo');
   fs.writeFileSync(configFilename, config);
@@ -80,14 +80,7 @@ function UpdateEnvFile() {
   if (fs.existsSync(envFile) && !argv.force) return console.log('Env file already exists, use --force to overwrite it');
 
   const exampleEnvFilePath = join(__dirname, '../example.env');
-  const steamKey = argv.steamKey;
-  const exportBaseUrl = argv.exportBaseUrl;
-  const disableMongo = argv.disableMongo;
-
   let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
-  if (steamKey) exampleEnvText = exampleEnvText.replaceAll('http://steamcommunity.com/dev/apikey', steamKey);
-  if (disableMongo) exampleEnvText = exampleEnvText.replaceAll('DISABLE_MONGO=false', `DISABLE_MONGO=${disableMongo}`);
-  if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('EXPORT_URL=http://localhost:10001/serverResult', `EXPORT_URL=${exportBaseUrl}`);
   if (ports.serverPort) exampleEnvText = exampleEnvText.replaceAll('COMPOSE_PROJECT_NAME=screeps-server', `COMPOSE_PROJECT_NAME=screeps-server-${ports.serverPort}`);
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');
