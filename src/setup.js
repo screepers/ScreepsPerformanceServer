@@ -59,10 +59,7 @@ function UpdateBotFolder() {
 function updateConfigFile() {
   const configFilename = join(__dirname, '../config.yml');
 
-  if (fs.existsSync(configFilename)) {
-    if (Config.argv.force) fs.unlinkSync(configFilename);
-    else return
-  }
+  if (fs.existsSync(configFilename) && !argv.force) return console.log('Config file already exists, use --force to overwrite it');
   // Copy config file to non example file
   fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
 
