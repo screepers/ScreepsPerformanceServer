@@ -202,6 +202,11 @@ class Tester {
       await Helper.executeCliCommand('utils.removeBots()');
       await Helper.executeCliCommand('utils.setShardName("performanceServer")');
 
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W0N0', x: 0, y:0 })");
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N10', x: 0, y:0 })");
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N0', x: 0, y:0 })");
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W0N10', x: 0, y:0 })");
+
       const spawnBots = [];
       const rooms = Object.entries(Config.rooms);
       for (let roomCount = 0; roomCount < rooms.length; roomCount += 1) {
@@ -215,6 +220,7 @@ class Tester {
       if (Object.keys(Config.rooms).length === Object.keys(this.roomsSeen).length) {
         Helper.followLog(Config.trackedRooms, Tester.statusUpdater);
         await Helper.executeCliCommand('system.resumeSimulation()');
+        console.log('Server ready!');
       }
       this.checkForSuccess(resolve, reject);
     });
@@ -222,8 +228,6 @@ class Tester {
   }
 
   async run() {
-    console.log('Starting...');
-    await Helper.initServer();
     if (!await Helper.startServer()) return;
     await Helper.sleep(10);
     if (!await Helper.restartServer()) return;

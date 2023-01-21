@@ -1,10 +1,10 @@
 import fs from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import minimist from 'minimist'
 import getPort, {portNumbers} from 'get-port';
 import Config from './config.js';
 
+import minimist from 'minimist'
 const argv = minimist(process.argv.slice(2));
 console.dir(argv);
 
@@ -56,17 +56,28 @@ function UpdateBotFolder() {
   console.log(`Replaced bot folder with an total of ${botFiles.length} files`);
 }
 
+function updateConfigFile() {
+  const configFilename = join(__dirname, '../config.yml');
+
+  if (fs.existsSync(configFilename) && !argv.force) return console.log('Config file already exists, use --force to overwrite it');
+  // Copy config file to non example file
+  fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
+
+  // Read and replace config file
+  let config = fs.readFileSync(configFilename, { encoding: 'utf8' });
+  if (Config.argv.steamKey) config = config.replace('steamKey: http://steamcommunity.com/dev/apikey', `steamKey: ${Config.argv.steamKey}`);
+  if (Config.argv.relayPort) config = config.replace('relayPort: undefined', `relayPort: ${Config.argv.relayPort}`);
+  if (Config.argv.disableMongo) config = config.replace('- screepsmod-mongo', '# - screepsmod-mongo');
+  fs.writeFileSync(configFilename, config);
+  console.log("Config.yml file created")
+}
+
 function UpdateEnvFile() {
   const envFile = join(__dirname, '../.env');
   if (fs.existsSync(envFile) && !argv.force) return console.log('Env file already exists, use --force to overwrite it');
 
   const exampleEnvFilePath = join(__dirname, '../example.env');
-  const steamKey = argv.steamKey;
-  const exportBaseUrl = argv.exportBaseUrl;
-
   let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
-  if (steamKey) exampleEnvText = exampleEnvText.replaceAll('http://steamcommunity.com/dev/apikey', steamKey);
-  if (exportBaseUrl) exampleEnvText = exampleEnvText.replaceAll('EXPORT_URL=http://localhost:10001/serverResult', `EXPORT_URL=${exportBaseUrl}`);
   if (ports.serverPort) exampleEnvText = exampleEnvText.replaceAll('COMPOSE_PROJECT_NAME=screeps-server', `COMPOSE_PROJECT_NAME=screeps-server-${ports.serverPort}`);
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');
@@ -90,6 +101,7 @@ async function UpdateDockerComposeFile() {
 
 export default async function Setup() {
   ports = await getFreePorts();
+  updateConfigFile();
   UpdateBotFolder();
   UpdateEnvFile();
   await UpdateDockerComposeFile()

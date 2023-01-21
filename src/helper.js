@@ -12,6 +12,7 @@ import Config from './config.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import * as dotenv from 'dotenv';
+dotenv.config({ path: join(__dirname, '../.env') });
 const dockerComposePath = join(__dirname, '../docker-compose.yml');
 const basicCommand = `docker-compose -f "${dockerComposePath}"`;
 
@@ -128,24 +129,6 @@ export default class Helper {
     return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
   }
 
-  static async initServer() {
-    dotenv.config({ path: join(__dirname, '../.env') });
-    console.log('Initializing server...');
-    const configFilename = join(__dirname, '../config.yml');
-
-    if (fs.existsSync(configFilename)) {
-      if (Config.argv.force) fs.unlinkSync(configFilename);
-      else return
-    }
-    // Copy config file to non example file
-    fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
-
-    // Read and replace config file
-    const config = fs.readFileSync(configFilename, { encoding: 'utf8' }).replace('steamKey: unknown', `steamKey: ${process.env.STEAM_API_KEY || 'unknown'}`).replace('relayPort: undefined', `relayPort: ${process.argv.replayPort}`);
-    fs.writeFileSync(configFilename, config);
-    console.log("Written config.yml")
-  }
-
   /**
       * startServer method
       *
@@ -190,6 +173,7 @@ export default class Helper {
   }
 
   static async restartServer() {
+
     const restartCommand = `${basicCommand} restart screeps`;
     const serverLogsCommand = `${basicCommand} logs -f screeps`;
 
@@ -281,7 +265,7 @@ export default class Helper {
     controllerStatus = newControllerStatus;
 
     try {
-      await fetch(process.env.EXPORT_URL, {
+      await fetch(Config.argv.exportUrl, {
         method: 'POST',
         body: JSON.stringify({
           milestones, lastTick, status, commitName, startTime: start, endTime: Date.now(), controllerStatus

@@ -22,7 +22,6 @@ services:
         restart: unless-stopped
         logging:
             driver: "local"
-
     redis:
         image: redis
         volumes:

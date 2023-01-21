@@ -1,9 +1,11 @@
-steamKey: unknown
+steamKey: http://steamcommunity.com/dev/apikey
 mods:
 - screepsmod-auth
 - screepsmod-admin-utils
 - screepsmod-server-stats-test
-#- screepsmod-mongo
+- screepsmod-mongo
+#- screepsmod-market needs more testing I propose try dynamic first
+- screepsmod-dynamicmarket
 bots:
   bot: ./bots/dist
 serverConfig: # This section requires screepsmod-admin-utils to work
