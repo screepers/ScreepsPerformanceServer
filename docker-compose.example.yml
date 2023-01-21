@@ -24,8 +24,6 @@ services:
             driver: "local"
     redis:
         image: redis
-        logging:
-            driver: "none"
         volumes:
         - redis-data:/data
         restart: unless-stopped
