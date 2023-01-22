@@ -75,9 +75,10 @@ function updateConfigFile() {
 function UpdateEnvFile() {
   const envFile = join(__dirname, '../.env');
   if (fs.existsSync(envFile) && !argv.force) return console.log('Env file already exists, use --force to overwrite it');
+  const dockerComposePath = join(__dirname, '../docker-compose.yml');
 
   const exampleEnvFilePath = join(__dirname, '../example.env');
-  let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8');
+  let exampleEnvText = fs.readFileSync(exampleEnvFilePath, 'utf8').replace('COMPOSE_FILE=./docker-compose.yml', `COMPOSE_FILE=${dockerComposePath}`);
   if (ports.serverPort) exampleEnvText = exampleEnvText.replaceAll('COMPOSE_PROJECT_NAME=screeps-server', `COMPOSE_PROJECT_NAME=screeps-server-${ports.serverPort}`);
   fs.writeFileSync(envFile, exampleEnvText);
   console.log('Env file created');

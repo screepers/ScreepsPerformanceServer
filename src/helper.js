@@ -13,8 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import * as dotenv from 'dotenv';
 dotenv.config({ path: join(__dirname, '../.env') });
-const dockerComposePath = join(__dirname, '../docker-compose.yml');
-const basicCommand = `docker-compose -f "${dockerComposePath}"`;
+const basicCommand = "docker-compose";
 
 const filter = {
   controller: (o) => {

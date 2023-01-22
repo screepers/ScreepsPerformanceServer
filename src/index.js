@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import Helper from './helper.js';
 import Config from './config.js';
 import Setup from "./setup.js"
@@ -10,12 +11,16 @@ let lastTick = 0;
 const start = Date.now();
 
 process.once('SIGINT', () => {
-  console.log('SIGINT received...');
-  console.log(`${lastTick} End of simulation`);
+  console.log('Stop received...');
+  const end = Date.now();
+  console.log(`${lastTick} ticks elapsed, ${Math.floor((end - start) / 1000)} seconds`);
   console.log('Status:');
   console.log(JSON.stringify(status, null, 2));
   console.log('Milestones:');
   console.log(JSON.stringify(Config.milestones, null, 2));
+  console.log('Executing docker-compose stop');
+  execSync('docker-compose stop', { stdio: 'ignore' })
+  console.log('Exiting done...');
   process.exit();
 });
 
@@ -68,7 +73,7 @@ class Tester {
       setTimeout(() => {
         console.log('Timeout reached!');
         process.exit(1);
-      }, Math.min(this.maxTicks, 40000) * 5000);
+      }, Math.min(this.maxTicks+1000, 20000) * 10000);
     } catch (e) {
       console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
     }
@@ -228,9 +233,9 @@ class Tester {
   }
 
   async run() {
-    if (!await Helper.startServer()) return;
+    if (!await Helper.startServer()) process.emit('SIGINT');
     await Helper.sleep(10);
-    if (!await Helper.restartServer()) return;
+    if (!await Helper.restartServer()) process.emit('SIGINT');
     await Helper.sleep(10);
 
     console.log('Starting... done');
@@ -242,8 +247,6 @@ class Tester {
       exitCode = 1;
       console.log(`${lastTick} ${e}`);
     }
-    const end = Date.now();
-    console.log(`${lastTick} ticks elapsed, ${Math.floor((end - start) / 1000)} seconds`);
     process.exit(exitCode);
   }
 }
@@ -258,5 +261,5 @@ class Tester {
   await Setup();
   const tester = new Tester();
   await tester.run();
-
+  process.emit('SIGINT');
 })();
