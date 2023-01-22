@@ -210,9 +210,9 @@ class Tester {
       const spawnBots = [];
       const rooms = Object.entries(Config.rooms);
       for (let roomCount = 0; roomCount < rooms.length; roomCount += 1) {
-        const roomInfo = rooms[roomCount];
-        const roomName = roomInfo[0];
-        const botName = roomInfo[1];
+        const roomData = rooms[roomCount];
+        const roomName = roomData[0];
+        const botName = roomData[1];
         spawnBots.push(Helper.spawnBot(botName, roomName, this.roomsSeen));
       }
       await Promise.all(spawnBots);
