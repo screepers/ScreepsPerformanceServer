@@ -202,6 +202,9 @@ class Tester {
     // eslint-disable-next-line no-async-promise-executor
     const execute = new Promise(async (resolve, reject) => {
       await Helper.executeCliCommand('system.resetAllData()');
+      if (!await Helper.restartServer()) process.emit('SIGINT');
+      await Helper.sleep(10);
+
       await Helper.executeCliCommand('system.pauseSimulation()');
       await Helper.executeCliCommand(`system.setTickDuration(${Config.tickDuration})`);
       await Helper.executeCliCommand('utils.removeBots()');
@@ -234,8 +237,6 @@ class Tester {
 
   async run() {
     if (!await Helper.startServer()) process.emit('SIGINT');
-    await Helper.sleep(10);
-    if (!await Helper.restartServer()) process.emit('SIGINT');
     await Helper.sleep(10);
 
     console.log('Starting... done');
