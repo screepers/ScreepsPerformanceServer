@@ -13,13 +13,14 @@ const start = Date.now();
 process.once('SIGINT', () => {
   console.log('Stop received...');
   const end = Date.now();
+  console.log('Executing docker-compose stop');
+  execSync('docker-compose stop', { stdio: 'ignore' })
+
   console.log(`${lastTick} ticks elapsed, ${Math.floor((end - start) / 1000)} seconds`);
   console.log('Status:');
   console.log(JSON.stringify(status, null, 2));
   console.log('Milestones:');
   console.log(JSON.stringify(Config.milestones, null, 2));
-  console.log('Executing docker-compose stop');
-  execSync('docker-compose stop', { stdio: 'ignore' })
   console.log('Exiting done...');
   process.exit();
 });
@@ -97,6 +98,9 @@ class Tester {
         await Helper.sleep(1);
       }
       console.log(`${lastTick} End of simulation`);
+      console.log('Executing docker-compose stop');
+      execSync('docker-compose stop', { stdio: 'ignore' })
+
       console.log('Status:');
       console.log(JSON.stringify(status, null, 2));
       console.log('Milestones:');
