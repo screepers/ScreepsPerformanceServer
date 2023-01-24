@@ -25,13 +25,13 @@ This includes data export of the milestones result, it includes the following po
 
 - Update all .example files to your needs, this is not needed if you use the default setup
 
-Custom bot:
+### Custom bot
 
 1. Create new folder in `bots`
 2. Add your js bot files in it (must have main.js as entry file)
 3. Update `config.yml`  bots.bot string to your bot path
 
-Run commands:
+### Run commands
 
 - --maxTicks, limit the amount of ticks the server will run
 - --maxBots, limit the amount of bots that can be spawned
