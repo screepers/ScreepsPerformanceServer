@@ -7,7 +7,9 @@ import { exec, execSync } from 'child_process';
 
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import Config from './config.js';
+const Config = JSON.parse(fs.readFileSync('config.json'));
+import minimist from 'minimist'
+const argv = minimist(process.argv.slice(2));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,14 +41,6 @@ const filter = {
 const hostname = '127.0.0.1';
 
 export default class Helper {
-  static setCliPort(port) {
-    Config.cliPort = port;
-  }
-
-  static setServerPort(port) {
-    Config.serverPort = port;
-  }
-
   /**
       * followLog method
       *
@@ -57,14 +51,14 @@ export default class Helper {
       * @param {function} statusUpdater - Function to handle status updates
       * @return {undefined}
       */
-  static async followLog(rooms, statusUpdater) {
+  static async followLog(rooms, statusUpdater, serverPort) {
     rooms.forEach(async (room) => {
       const api = new ScreepsAPI({
         email: room,
         password: 'password',
         protocol: 'http',
         hostname,
-        port: Config.serverPort,
+        port: serverPort,
         path: '/',
       });
 
@@ -82,10 +76,10 @@ export default class Helper {
    * @param {string} roomName
    */
 
-  static async spawnBot(botName, roomName, roomsSeen) {
+  static async spawnBot(botName, roomName, roomsSeen, cliPort) {
     console.log(`Spawn ${botName} in ${roomName}`);
-    await this.executeCliCommand(`bots.spawn('${botName}', '${roomName}', {username: '${roomName}', auto:'true'})\r\n`);
-    await this.setPassword(roomName, roomsSeen, Config.playerRooms);
+    await this.executeCliCommand(`bots.spawn('${botName}', '${roomName}', {username: '${roomName}', auto:'true'})\r\n`, cliPort);
+    await this.setPassword(roomName, roomsSeen, Config.playerRooms, cliPort);
   }
 
   /**
@@ -98,20 +92,20 @@ export default class Helper {
       * @param {stringMap} playerRooms
       * @return {boolean}
       */
-  static async setPassword(roomName, roomsSeen, playerRooms) {
+  static async setPassword(roomName, roomsSeen, playerRooms, cliPort) {
     // eslint-disable-next-line no-param-reassign
     roomsSeen[roomName] = true;
     console.log(`Set password for ${roomName}`);
     /* eslint max-len: ["error", 1300] */
     await this.executeCliCommand(
       // Password is 'password'
-      `storage.db.users.update({username: '${roomName}'}, {$set: {password: 'd0347d74b308e046b399e151c3674297ddd1aba6d6e380c94ea8ec070393d17297a3407e9c17d3d4a308043e3fd219faecc9d0d4c548a6eab87549ec83fd0688197d14b84fa810935f694c14eadd6eac3b36e19405190b1e216b5c3b0b79f03815670ba8c0eb2e23d00f556b8fdfc35eaa6d3f8f734132196c70c921f29160b1f1a0ac1fe4c196c15aa7c2a5d8358ed89fff3ad4ddbe45f7fc5ecb1b4538940f31188a9a65af59b8481f6aa00fecebf4f8e7a91be877ec8610350a06bac16d666f255a73768a96cd1797c25c68aded637f96c7b0e9ad8e9f85997bced58c288f8df06f78b096750fadc128a345c01b76ab4f0feff6f5b89712ddfe6d9b7a713b05add43bd0c4b1c59b4a72d5b81a42570c0b1f7980a969913ba31baf88ef1213e46cb09577e249688e1d10be958e7c5dae4033a5cc174261b837b29134ea090df426ad9a3624fa2be2dbfd47c6a56d7cda99c30d74c05102b1ee05e09eba4cf3f785d40c94f22b24c4e47409f5ba123b98fa30d23498e07ee26d542487b3be480f7b51f23712aef06630d1ea1a057e44e0bb8fcc1709e457544051730140852e7b493b7d3cd23202405f3d81d605be47c792681ce2d548388feddad94f790d58fb887d89358c4c0b8a6d0148e01f7f2cfd613ac371d3e3bdc606189eafba726df2959c2ac6b4780068713cb79a687e65298a4aeee75a3ef47aab3a9b853407be', salt: '8592666ec92a801874b463ea4c0a0da519936246d54bc4c40391f9ac7c5a8000'}})\r\n`,
+      `storage.db.users.update({username: '${roomName}'}, {$set: {password: 'd0347d74b308e046b399e151c3674297ddd1aba6d6e380c94ea8ec070393d17297a3407e9c17d3d4a308043e3fd219faecc9d0d4c548a6eab87549ec83fd0688197d14b84fa810935f694c14eadd6eac3b36e19405190b1e216b5c3b0b79f03815670ba8c0eb2e23d00f556b8fdfc35eaa6d3f8f734132196c70c921f29160b1f1a0ac1fe4c196c15aa7c2a5d8358ed89fff3ad4ddbe45f7fc5ecb1b4538940f31188a9a65af59b8481f6aa00fecebf4f8e7a91be877ec8610350a06bac16d666f255a73768a96cd1797c25c68aded637f96c7b0e9ad8e9f85997bced58c288f8df06f78b096750fadc128a345c01b76ab4f0feff6f5b89712ddfe6d9b7a713b05add43bd0c4b1c59b4a72d5b81a42570c0b1f7980a969913ba31baf88ef1213e46cb09577e249688e1d10be958e7c5dae4033a5cc174261b837b29134ea090df426ad9a3624fa2be2dbfd47c6a56d7cda99c30d74c05102b1ee05e09eba4cf3f785d40c94f22b24c4e47409f5ba123b98fa30d23498e07ee26d542487b3be480f7b51f23712aef06630d1ea1a057e44e0bb8fcc1709e457544051730140852e7b493b7d3cd23202405f3d81d605be47c792681ce2d548388feddad94f790d58fb887d89358c4c0b8a6d0148e01f7f2cfd613ac371d3e3bdc606189eafba726df2959c2ac6b4780068713cb79a687e65298a4aeee75a3ef47aab3a9b853407be', salt: '8592666ec92a801874b463ea4c0a0da519936246d54bc4c40391f9ac7c5a8000'}})\r\n`, cliPort
     );
 
     if (playerRooms[roomName]) {
       console.log(`Set steam id for ${roomName}`);
       await this.executeCliCommand(
-        `storage.db.users.update({username: '${roomName}'}, {$set: {steam: {id: '${playerRooms[roomName]}'}}})\r\n`,
+        `storage.db.users.update({username: '${roomName}'}, {$set: {steam: {id: '${playerRooms[roomName]}'}}})\r\n`, cliPort
       );
     }
   }
@@ -153,8 +147,8 @@ export default class Helper {
       const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {
         if (data.includes('[main] exec: screeps-engine-main')) {
-            resolve();
-          }
+          resolve();
+        }
       });
     });
     return Promise.race([startServer, maxTime])
@@ -188,8 +182,8 @@ export default class Helper {
       const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {
         if (data.includes('[main] exec: screeps-engine-main')) {
-            resolve();
-          }
+          resolve();
+        }
       });
     });
     return Promise.race([restartServer, maxTime])
@@ -248,7 +242,7 @@ export default class Helper {
   }
 
   static async sendResult(milestones, status, controllerStatus, lastTick, start) {
-    if (!Config.argv.exportUrl) return;
+    if (!argv.exportUrl) return;
     let commitName = 'localhost';
     if (process.env.GITHUB_EVENT_PATH) {
       const file = fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8');
@@ -264,7 +258,7 @@ export default class Helper {
     controllerStatus = newControllerStatus;
 
     try {
-      await fetch(Config.argv.exportUrl, {
+      await fetch(argv.exportUrl, {
         method: 'POST',
         body: JSON.stringify({
           milestones, lastTick, status, commitName, startTime: start, endTime: Date.now(), controllerStatus
@@ -279,9 +273,9 @@ export default class Helper {
     }
   }
 
-  static async executeCliCommand(command) {
+  static async executeCliCommand(command, cliPort) {
     try {
-      const result = await fetch(`http://${hostname}:${Config.cliPort}/cli`, {
+      const result = await fetch(`http://${hostname}:${cliPort}/cli`, {
         method: 'POST', body: command, headers: { 'Content-Type': 'text/plain' },
       });
       const text = await result.text();

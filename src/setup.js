@@ -2,7 +2,6 @@ import fs from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import getPort, {portNumbers} from 'get-port';
-import Config from './config.js';
 
 import minimist from 'minimist'
 const argv = minimist(process.argv.slice(2));
@@ -65,9 +64,9 @@ function updateConfigFile() {
 
   // Read and replace config file
   let config = fs.readFileSync(configFilename, { encoding: 'utf8' });
-  if (Config.argv.steamKey) config = config.replace('steamKey: http://steamcommunity.com/dev/apikey', `steamKey: ${Config.argv.steamKey}`);
-  if (Config.argv.relayPort) config = config.replace('relayPort: undefined', `relayPort: ${Config.argv.relayPort}`);
-  if (Config.argv.disableMongo) config = config.replace('- screepsmod-mongo', '# - screepsmod-mongo');
+  if (argv.steamKey) config = config.replace('steamKey: http://steamcommunity.com/dev/apikey', `steamKey: ${argv.steamKey}`);
+  if (argv.relayPort) config = config.replace('relayPort: undefined', `relayPort: ${argv.relayPort}`);
+  if (argv.disableMongo) config = config.replace('- screepsmod-mongo', '# - screepsmod-mongo');
   fs.writeFileSync(configFilename, config);
   console.log("Config.yml file created")
 }
@@ -89,9 +88,6 @@ async function UpdateDockerComposeFile() {
   if (fs.existsSync(dockerComposeFile) && !argv.force) return console.log('Docker-compose file already exists, use --force to overwrite it');
 
   const exampleDockerComposeFile = join(__dirname, '../docker-compose.example.yml');
-  Config.serverPort = ports.serverPort;
-  Config.cliPort = ports.cliPort;
-
   let exampleDockerComposeText = fs.readFileSync(exampleDockerComposeFile, 'utf8');
   exampleDockerComposeText = exampleDockerComposeText
   .replaceAll('- 21025:21025/tcp', `- ${ports.serverPort}:21025/tcp`)
@@ -106,4 +102,5 @@ export default async function Setup() {
   UpdateBotFolder();
   UpdateEnvFile();
   await UpdateDockerComposeFile()
+  return ports;
 }

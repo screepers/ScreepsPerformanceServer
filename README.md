@@ -18,36 +18,36 @@ This includes data export of the milestones result, it includes the following po
 
 ## Installation
 
-### Setup
+- Clone this repo
+- Run `npm install` to install dependencies
 
-Default:
+## Setup
 
-1. Copy .env.example and rename it to .env
-2. Change `STEAM_API_KEY` to your key
-3. If you want to auto login to one of the users you can change one of the USER Steam ids to yours and choose an room in `config.js`
-4. If you want to use the milestone result export integration then you need to possible update the `EXPORT_URL` to your bot api endpoint
+- Update all .example files to your needs, this is not needed if you use the default setup
 
 Custom bot:
 
 1. Create new folder in `bots`
 2. Add your js bot files in it (must have main.js as entry file)
-3. Update `config.example.yml` bots.bot string to your bot path
+3. Update `config.yml`  bots.bot string to your bot path
 
-### Running
+Run commands:
 
-Inside this folder
-
-```bash
-npm install
-npm run server
-```
+- --maxTicks, limit the amount of ticks the server will run
+- --maxBots, limit the amount of bots that can be spawned
+- --serverPort, change the port the server will run on
+- --cliPort, change the port the cli will run on
+- --force, force the non .example config files to be overwritten.
 
 ## Usage
 
-After you see `Start the simulation with runtime (... ticks if choosen limited tick run)` then go to `localhost:21025` (if you didnt change it) and check out the progress of your bot.
-The default password is `password`.
+- Run `npm run server` to start the server
 
-Its also possible to start using `npx`, to do this you need to do `npm i -g screeps-performance-server`, then `npx screeps-performance-server` with optional parameter to limit tick count (default is infinity) following max bot count (default is 5 if missing)  `npx screeps-performance-server --maxTicks=10000 --maxBots=5`
+After you see `Start the simulation with runtime (... ticks if chosen limited tick run)` then go to `localhost:21025` (if not changed) and check out the admin utils dashboard.
+
+The default pre spawned user password is `password`.
+
+Its also possible to start using `npx`, to do this you need to do `npm i -g screeps-performance-server`, then `npx screeps-performance-server` with optional parameters (see #Configuration run commands)
 
 ## Milestones
 

@@ -1,7 +1,10 @@
 import { execSync } from 'child_process';
 import Helper from './helper.js';
-import Config from './config.js';
 import Setup from "./setup.js"
+import fs from 'fs';
+const Config = JSON.parse(fs.readFileSync('config.json'));
+import minimist from 'minimist'
+const argv = minimist(process.argv.slice(2));
 
 const controllerRooms = {};
 const status = {};
@@ -32,8 +35,8 @@ class Tester {
 
   constructor() {
     try {
-      this.maxTicks = Config.argv.maxTicks !== "undefined" ? Config.argv.maxTicks || 50 * 1000 : 50 * 1000;
-      let maxBots = Math.max(Config.argv.maxBots, 1) || 5
+      this.maxTicks = argv.maxTicks !== "undefined" ? argv.maxTicks || 50 * 1000 : 50 * 1000;
+      let maxBots = Math.max(argv.maxBots, 1) || 5
 
       let rooms = Object.entries(Config.rooms);
       if (rooms.length > maxBots) {
@@ -68,13 +71,10 @@ class Tester {
         controllerStatus[room] = {};
       }
 
-      if (Config.argv.cliPort) Helper.setCliPort(Config.argv.cliPort);
-      if (Config.argv.serverPort) Helper.setServerPort(Config.argv.serverPort);
-
       setTimeout(() => {
         console.log('Timeout reached!');
         process.exit(1);
-      }, Math.min(this.maxTicks+1000, 20000) * 10000);
+      }, Math.min(this.maxTicks + 1000, 20000) * 10000);
     } catch (e) {
       console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
     }
@@ -205,19 +205,19 @@ class Tester {
   async execute() {
     // eslint-disable-next-line no-async-promise-executor
     const execute = new Promise(async (resolve, reject) => {
-      await Helper.executeCliCommand('system.resetAllData()');
+      await Helper.executeCliCommand('system.resetAllData()', Config.cliPort);
       if (!await Helper.restartServer()) process.emit('SIGINT');
       await Helper.sleep(10);
 
-      await Helper.executeCliCommand('system.pauseSimulation()');
-      await Helper.executeCliCommand(`system.setTickDuration(${Config.tickDuration})`);
-      await Helper.executeCliCommand('utils.removeBots()');
-      await Helper.executeCliCommand('utils.setShardName("performanceServer")');
+      await Helper.executeCliCommand('system.pauseSimulation()', Config.cliPort);
+      await Helper.executeCliCommand(`system.setTickDuration(${Config.tickDuration})`, Config.cliPort);
+      await Helper.executeCliCommand('utils.removeBots()', Config.cliPort);
+      await Helper.executeCliCommand('utils.setShardName("performanceServer")', Config.cliPort);
 
-      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W0N0', x: 0, y:0 })");
-      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N10', x: 0, y:0 })");
-      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N0', x: 0, y:0 })");
-      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W0N10', x: 0, y:0 })");
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W0N0', x: 0, y:0 })", Config.cliPort);
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N10', x: 0, y:0 })", Config.cliPort);
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W10N0', x: 0, y:0 })", Config.cliPort);
+      await Helper.executeCliCommand("storage.db['rooms.objects'].insert({ type: 'terminal', room: 'W0N10', x: 0, y:0 })", Config.cliPort);
 
       const spawnBots = [];
       const rooms = Object.entries(Config.rooms);
@@ -225,13 +225,13 @@ class Tester {
         const roomData = rooms[roomCount];
         const roomName = roomData[0];
         const botName = roomData[1];
-        spawnBots.push(Helper.spawnBot(botName, roomName, this.roomsSeen));
+        spawnBots.push(Helper.spawnBot(botName, roomName, this.roomsSeen, Config.cliPort));
       }
       await Promise.all(spawnBots);
 
       if (Object.keys(Config.rooms).length === Object.keys(this.roomsSeen).length) {
-        Helper.followLog(Config.trackedRooms, Tester.statusUpdater);
-        await Helper.executeCliCommand('system.resumeSimulation()');
+        Helper.followLog(Config.trackedRooms, Tester.statusUpdater, Config.serverPort);
+        await Helper.executeCliCommand('system.resumeSimulation()', Config.cliPort);
         console.log('Server ready!');
       }
       this.checkForSuccess(resolve, reject);
@@ -263,7 +263,9 @@ class Tester {
  * @return {undefined}
  */
 (async () => {
-  await Setup();
+  const ports = await Setup();
+  Config.serverPort = ports.serverPort;
+  Config.cliPort = ports.cliPort;
   const tester = new Tester();
   await tester.run();
   process.emit('SIGINT');
