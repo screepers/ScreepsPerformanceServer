@@ -140,12 +140,13 @@ export default class Helper {
     const startServer = new Promise(async (resolve) => {
       console.log('\r\nProcess: Starting server...');
       console.log('Stopping server...')
-      execSync(stopCommand, { stdio: 'ignore' });
+      execSync(stopCommand, { stdio: argv.debug ? "inherit" : 'ignore' });
       console.log('Starting server, this will take a while...')
       exec(upCommand);
       await this.sleep(10)
       const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {
+        if (argv.debug) console.log(data)
         if (data.includes('[main] exec: screeps-engine-main')) {
           resolve();
         }
@@ -181,6 +182,7 @@ export default class Helper {
       await this.sleep(10)
       const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {
+        if (argv.debug) console.log(data)
         if (data.includes('[main] exec: screeps-engine-main')) {
           resolve();
         }

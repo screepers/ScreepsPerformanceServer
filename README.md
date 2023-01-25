@@ -38,6 +38,7 @@ This includes data export of the milestones result, it includes the following po
 - --serverPort, change the port the server will run on
 - --cliPort, change the port the cli will run on
 - --force, force the non .example config files to be overwritten.
+- --debug, listen to setup docker logs
 
 ## Usage
 
