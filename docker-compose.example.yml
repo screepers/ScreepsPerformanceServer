@@ -6,6 +6,7 @@ services:
             - ./config.yml:/screeps/config.yml
             - ./bots:/screeps/bots
             - screeps-data:/screeps
+            - ./logs:/screeps/logs
         ports:
             - 21025:21025/tcp
             - 21026:21026
