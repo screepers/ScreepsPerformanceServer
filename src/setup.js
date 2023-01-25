@@ -92,6 +92,8 @@ async function UpdateDockerComposeFile() {
   exampleDockerComposeText = exampleDockerComposeText
   .replaceAll('- 21025:21025/tcp', `- ${ports.serverPort}:21025/tcp`)
   .replaceAll('- 21026:21026', `- ${ports.cliPort}:21026`);
+  
+  if (argv.debug) exampleDockerComposeText = exampleDockerComposeText.replace('driver: "local"', 'driver: "json-file"')
   fs.writeFileSync(dockerComposeFile, exampleDockerComposeText);
   console.log('Docker-compose file created');
 }
