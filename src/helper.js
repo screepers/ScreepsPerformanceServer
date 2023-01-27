@@ -151,12 +151,18 @@ export default class Helper {
       console.log('Starting server, this will take a while...')
       exec(upCommand);
       await this.sleep(10)
+      
+      let hitCountMissing = 1;
       const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {
-        if (argv.debug) console.log(data)
-        if (data.includes('[main] exec: screeps-engine-main')) {
-          resolve();
-        }
+        const lines = data ? data.split(/(\r?\n)/g) : [];
+        lines.forEach((line) => {
+          if (argv.debug) console.log(line)
+          if (line.includes('[main] exec: screeps-engine-main')) {
+            hitCountMissing--;
+            if (hitCountMissing === 0) resolve();
+          }
+        })
       });
     });
     return Promise.race([startServer, maxTime])
@@ -187,12 +193,18 @@ export default class Helper {
       console.log('Restarting server...\r\n')
       exec(restartCommand);
       await this.sleep(10)
+      
+      let hitCountMissing = 2;
       const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {
-        if (argv.debug) console.log(data)
-        if (data.includes('[main] exec: screeps-engine-main')) {
-          resolve();
-        }
+        const lines = data ? data.split(/(\r?\n)/g) : [];
+        lines.forEach((line) => {
+          if (argv.debug) console.log(line)
+          if (line.includes('[main] exec: screeps-engine-main')) {
+            hitCountMissing--;
+            if (hitCountMissing === 0) resolve();
+          }
+        })
       });
     });
     return Promise.race([restartServer, maxTime])

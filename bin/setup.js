@@ -1,2 +1,5 @@
 #!/usr/bin/env node
-await import('../src/index.js');
+async function run() {
+    await import('../src/index.js');
+}
+run();
