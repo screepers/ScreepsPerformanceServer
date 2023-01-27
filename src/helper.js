@@ -7,7 +7,7 @@ import { exec, execSync } from 'child_process';
 
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-const Config = JSON.parse(fs.readFileSync('config.json'));
+let Config;
 import minimist from 'minimist'
 const argv = minimist(process.argv.slice(2));
 
@@ -42,6 +42,10 @@ const filter = {
 const hostname = '127.0.0.1';
 
 export default class Helper {
+  static async setConfig(config) {
+    Config = config;
+  }
+
   /**
       * followLog method
       *

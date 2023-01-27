@@ -99,8 +99,8 @@ async function UpdateDockerComposeFile() {
 }
 
 function UpdateConfigJsonFile() {
-  const jsonFile = join(__dirname, '../config.json');
-  if (fs.existsSync(jsonFile) && !argv.force) return console.log('Config.json file already exists, use --force to overwrite it');
+  const configFile = join(__dirname, '../config.json');
+  if (fs.existsSync(configFile) && !argv.force) return console.log('Config.json file already exists, use --force to overwrite it');
 
   const exampleConfigFile = join(__dirname, '../config.example.json');
   let exampleConfigText = fs.readFileSync(exampleConfigFile, 'utf8');

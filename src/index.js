@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 import Helper from './helper.js';
 import Setup from "./setup.js"
 import fs from 'fs';
-const Config = JSON.parse(fs.readFileSync('config.json'));
+let Config;
 import minimist from 'minimist'
 const argv = minimist(process.argv.slice(2));
 
@@ -264,8 +264,11 @@ class Tester {
  */
 (async () => {
   const ports = await Setup();
+  Config = JSON.parse(fs.readFileSync('config.json'));
   Config.serverPort = ports.serverPort;
   Config.cliPort = ports.cliPort;
+
+  Helper.setConfig(Config);
   const tester = new Tester();
   await tester.run();
   process.emit('SIGINT');
