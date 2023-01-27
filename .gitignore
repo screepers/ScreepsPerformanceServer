@@ -2,6 +2,7 @@
 config.yml
 docker-compose.yml
 .env
+config.json
 
 # Folders
 node_modules

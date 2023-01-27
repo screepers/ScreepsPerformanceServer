@@ -55,10 +55,10 @@ function UpdateBotFolder() {
   console.log(`Replaced bot folder with an total of ${botFiles.length} files`);
 }
 
-function updateConfigFile() {
+function updateConfigYmlFile() {
   const configFilename = join(__dirname, '../config.yml');
 
-  if (fs.existsSync(configFilename) && !argv.force) return console.log('Config file already exists, use --force to overwrite it');
+  if (fs.existsSync(configFilename) && !argv.force) return console.log('Config.yml file already exists, use --force to overwrite it');
   // Copy config file to non example file
   fs.copyFileSync(join(__dirname, '../config.example.yml'), configFilename);
 
@@ -98,11 +98,22 @@ async function UpdateDockerComposeFile() {
   console.log('Docker-compose file created');
 }
 
+function UpdateConfigJsonFile() {
+  const jsonFile = join(__dirname, '../config.json');
+  if (fs.existsSync(jsonFile) && !argv.force) return console.log('Config.json file already exists, use --force to overwrite it');
+
+  const exampleConfigFile = join(__dirname, '../config.example.json');
+  let exampleConfigText = fs.readFileSync(exampleConfigFile, 'utf8');
+  fs.writeFileSync(configFile, exampleConfigText);
+  console.log('Config.json file created');
+}
+
 export default async function Setup() {
   ports = await getFreePorts();
-  updateConfigFile();
   UpdateBotFolder();
   UpdateEnvFile();
   await UpdateDockerComposeFile()
+  updateConfigYmlFile();
+  UpdateConfigJsonFile();
   return ports;
 }
