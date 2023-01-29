@@ -14,8 +14,6 @@ const argv = minimist(process.argv.slice(2));
 const isWindows = process.platform === 'win32';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-import * as dotenv from 'dotenv';
-dotenv.config({ path: join(__dirname, '../.env') });
 const basicCommand = "docker-compose";
 
 const filter = {
@@ -155,7 +153,7 @@ export default class Helper {
       console.log('Starting server, this will take a while...')
       exec(upCommand);
       await this.sleep(10)
-      
+
       let hitCountMissing = 1;
       const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {
@@ -197,7 +195,7 @@ export default class Helper {
       console.log('Restarting server...\r\n')
       exec(restartCommand);
       await this.sleep(10)
-      
+
       let hitCountMissing = 2;
       const child = exec(serverLogsCommand, { stdio: 'pipe' });
       child.stdout.on('data', (data) => {

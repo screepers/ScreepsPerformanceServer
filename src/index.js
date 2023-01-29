@@ -1,9 +1,15 @@
 import { execSync } from 'child_process';
 import Helper from './helper.js';
 import Setup from "./setup.js"
+import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 let Config;
 import minimist from 'minimist'
 const argv = minimist(process.argv.slice(2));
+
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const controllerRooms = {};
 const status = {};
@@ -262,10 +268,11 @@ class Tester {
  * @return {undefined}
  */
 (async () => {
-  const {ports, config} = await Setup();
+  const { ports, config } = await Setup();
   Config = config;
   Config.serverPort = ports.serverPort;
   Config.cliPort = ports.cliPort;
+  dotenv.config({ path: join(__dirname, '../.env') });
 
   Helper.setConfig(Config);
   const tester = new Tester();
