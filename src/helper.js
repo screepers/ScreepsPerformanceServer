@@ -305,7 +305,7 @@ export default class Helper {
       });
       const text = await result.text();
       console.log(`> ${command}`);
-      console.log(text);
+      if (argv.debug) console.log(text);
       await this.sleep(1)
       return text;
     } catch (error) {
