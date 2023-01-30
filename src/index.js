@@ -1,13 +1,14 @@
 import { execSync } from 'child_process';
-import Helper from './helper.js';
-import Setup from "./setup.js"
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-let Config;
-import minimist from 'minimist'
-const argv = minimist(process.argv.slice(2));
+import * as dotenv from 'dotenv';
+import minimist from 'minimist';
 
 import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import Setup from './setup.js';
+import Helper from './helper.js';
+
+let Config;
+const argv = minimist(process.argv.slice(2));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -22,7 +23,7 @@ process.once('SIGINT', () => {
   console.log('Stop received...');
   const end = Date.now();
   console.log('Executing docker-compose stop');
-  execSync('docker-compose stop', { stdio: 'ignore' })
+  execSync('docker-compose stop', { stdio: 'ignore' });
 
   console.log(`${lastTick} ticks elapsed, ${Math.floor((end - start) / 1000)} seconds`);
   console.log('Status:');
@@ -40,22 +41,24 @@ class Tester {
 
   constructor() {
     try {
-      this.maxTicks = argv.maxTicks !== "undefined" ? argv.maxTicks || 50 * 1000 : 50 * 1000;
-      let maxBots = Math.max(argv.maxBots, 1) || 5
+      this.maxTicks = argv.maxTicks !== 'undefined' ? argv.maxTicks || 50 * 1000 : 50 * 1000;
+      const maxBots = Math.max(argv.maxBots, 1) || 5;
 
       let rooms = Object.entries(Config.rooms);
       if (rooms.length > maxBots) {
-        const sortedRooms = rooms.sort((a, b) => Config.trackedRooms.indexOf(b[0]) - Config.trackedRooms.indexOf(a[0]));
+        const sortedRooms = rooms.sort(
+          (a, b) => Config.trackedRooms.indexOf(b[0]) - Config.trackedRooms.indexOf(a[0]),
+        );
         Config.rooms = {};
 
-        for (let i = 0; i < sortedRooms.length && i < maxBots; i++) {
-          const room = sortedRooms[i];
-          Config.rooms[room[0]] = room[1];
+        for (let i = 0; i < sortedRooms.length && i < maxBots; i += 1) {
+          const [roomName, roomConfig] = sortedRooms[i];
+          Config.rooms[roomName] = roomConfig;
         }
 
-        let trackedRooms = [];
+        const trackedRooms = [];
         rooms = Object.entries(Config.rooms);
-        for (let i = 0; i < Config.trackedRooms.length; i++) {
+        for (let i = 0; i < Config.trackedRooms.length; i += 1) {
           const room = Config.trackedRooms[i];
           if (rooms.find((r) => r[0] === room)) {
             trackedRooms.push(room);
@@ -64,7 +67,7 @@ class Tester {
         Config.trackedRooms = trackedRooms;
       }
 
-      for (let i = 0; i < Config.trackedRooms.length; i++) {
+      for (let i = 0; i < Config.trackedRooms.length; i += 1) {
         const room = Config.trackedRooms[i];
         status[room] = {
           controller: null,
@@ -104,7 +107,7 @@ class Tester {
       }
       console.log(`${lastTick} End of simulation`);
       console.log('Executing docker-compose stop');
-      execSync('docker-compose stop', { stdio: 'ignore' })
+      execSync('docker-compose stop', { stdio: 'ignore' });
 
       console.log('Status:');
       console.log(JSON.stringify(status, null, 2));
@@ -139,11 +142,13 @@ class Tester {
 
       Object.keys(status).forEach((room) => {
         const controllerLevel = status[room].level;
-        if (controllerLevel >= 1 && controllerStatus[room][controllerLevel] === undefined) controllerStatus[room][controllerLevel] = {
-          level: controllerLevel,
-          progress: status[room].progress,
-          tick: lastTick,
-        };
+        if (controllerLevel >= 1 && controllerStatus[room][controllerLevel] === undefined) {
+          controllerStatus[room][controllerLevel] = {
+            level: controllerLevel,
+            progress: status[room].progress,
+            tick: lastTick,
+          };
+        }
       });
 
       for (let i = 0; i < Config.milestones.length; i += 1) {
