@@ -1,60 +1,55 @@
 # Screeps-Performance-Server
 
-This is a Screeps server setup which has milestones & [Stats mod](https://github.com/The-International-Screeps-Bot/screepsmod-server-stats) build in.
+This is a Screeps server setup that includes milestones and the [Stats mod](https://github.com/The-International-Screeps-Bot/screepsmod-server-stats) built in. It was originally created by [TooAngel](https://github.com/TooAngel) and this version includes data export for the milestones results. The exported data includes:
 
-Credits for the original setup and baseplate go to [TooAngel](https://github.com/TooAngel)
-
-This includes data export of the milestones result, it includes the following points:
-
-1. Milestones
-2. Status (ControllerId, creeps, level, progress, structures)
+1. Milestones reached
+2. Room status (ControllerId, creep count, level, progress, structure count)
 3. Tick count
 4. Start/end time
 
 ## Requirements
 
-- Node 16.x
+- Node.js 16.x
 - Docker-Compose
 
 ## Installation
 
-### Setup
+1. Clone this repo
+2. Run `npm install` to install dependencies
 
-Default:
+## Setup
 
-1. Copy .env.example and rename it to .env
-2. Change `STEAM_API_KEY` to your key
-3. If you want to auto login to one of the users you can change one of the USER Steam ids to yours and choose an room in `config.js`
-4. If you want to use the milestone result export integration then you need to possible update the `EXPORT_URL` to your bot api endpoint
+- Update all `.example` files to your needs. This is not required if you use the default setup.
 
-Custom bot:
+### Custom bot
 
-1. Create new folder in `bots`
-2. Add your js bot files in it (must have main.js as entry file)
-3. Update `config.example.yml` bots.bot string to your bot path
+1. Create a new folder in the `bots` directory
+2. Add your bot's JS files to the new folder (the entry file must be named `main.js`)
+3. Update the `config.yml` file's `bots.bot` string to the path of your bot
 
-### Running
+### Run commands
 
-Inside this folder
-
-```bash
-npm install
-npm run server
-```
+- `--maxTicks`: limit the number of ticks the server will run
+- `--maxBots`: limit the number of bots that can be spawned
+- `--serverPort`: change the port the server will run on
+- `--cliPort`: change the port the CLI will run on
+- `--force`: force the non-`.example` config files to be overwritten
+- `--debug`: listen to setup Docker logs
 
 ## Usage
 
-After you see `Start the simulation with runtime (... ticks if choosen limited tick run)` then go to `localhost:21025` (if you didnt change it) and check out the progress of your bot.
-The default password is `password`.
+- Run `npm run server` to start the server
 
-Its also possible to start using `npx`, to do this you need to do `npm i -g screeps-performance-server`, then `npx screeps-performance-server` with optional parameter to limit tick count (default is infinity) following max bot count (default is 5 if missing)  `npx screeps-performance-server --maxTicks=10000 --maxBots=5`
+After you see `Start the simulation with runtime (... ticks if chosen limited tick run)`, go to `localhost:21025` (if not changed) and check out the admin utils dashboard. The default pre-spawned user password is `password`.
+
+You can also start the server using `npx` by running `npm i -g screeps-performance-server` and then `npx screeps-performance-server` with optional parameters (see #Configuration run commands)
 
 ## Milestones
 
-Inside the config you can add milestones, these milestones will be checked every tick and if one of them is reached they will be logged. Server should stop after all milestones are reached.
+You can add milestones to the config file, which will be checked every tick. If one of them is reached, it will be logged. The server should stop after all milestones have been reached.
 
-To add an milestone you can just edit or add one and add/update one of the following options:
+To add a milestone, you can edit or add one and add/update one of the following options:
 
-- level (rcl)
-- creeps (count)
-- structures (count)
+- `level` (rcl)
+- `creeps` (count)
+- `structures` (count)

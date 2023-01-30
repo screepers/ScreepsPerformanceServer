@@ -1,9 +1,10 @@
 {
     "name": "screeps-performance-server",
     "dependencies": {
-        "dotenv": "^16.0.1",
+        "dotenv": "^16.0.3",
         "get-port": "^6.1.2",
         "lodash": "^4.17.21",
+        "minimist": "^1.2.7",
         "ncp": "^2.0.0",
         "node-fetch": "^2.6.7",
         "node-powershell": "^5.0.1",
@@ -11,10 +12,10 @@
         "screeps-api": "1.16.0"
     },
     "scripts": {
-        "server": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026",
+        "server": "node src/index.js --maxTicks=10000 --maxBots=5 --serverPort=21025 --cliPort=21026",
         "server-test": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force",
-        "lint": "eslint **/*",
-        "lint-fix": "eslint **/* --fix"
+        "lint": "eslint src/**/*",
+        "lint:fix": "eslint src/**/* --fix"
     },
     "type": "module",
     "devDependencies": {
@@ -25,11 +26,12 @@
     "bin": {
         "screeps-performance-server": "./bin/setup.js"
     },
-    "version": "1.6.0",
+    "version": "1.8.0",
     "files": [
         "src",
         "bots",
         "example.env",
+        "config.example.json",
         "config.example.yml",
         "docker-compose.example.yml"
     ]
