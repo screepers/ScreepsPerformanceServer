@@ -136,16 +136,15 @@ async function Commands() {
 
   const logsPath = join(__dirname, '../logs');
   const logsCommands = [];
-  let deletedLogs = false;
-  if (fs.existsSync(logsPath) && argv.deleteLogs) {
+  let logsExist = fs.existsSync(logsPath);
+  if (logsExist && argv.deleteLogs) {
     console.log('deleting logs');
     if (!isWindows) logsCommands.push({ command: `sudo rm -rf ${logsPath}`, name: 'rm -rf logs' });
-    else logsCommands.push({ command: `rmdir /s /q ${logsPath}`, name: 'rmdir /s /q logs' });
-    deletedLogs = true;
+    else logsCommands.push({ command: `rmdir ${logsPath} /s /q`, name: 'rmdir /s /q logs' });
   }
 
-  if (!isWindows) {
-    if (!fs.existsSync(logsPath) || deletedLogs) {
+  if (!logsExist) {
+    if (!isWindows) {
       logsCommands.push({
         command: `sudo mkdir -p ${logsPath}`,
         name: 'mkdir logs',
