@@ -142,11 +142,6 @@ export default class Helper {
       console.log('\r\nProcess: Starting server...');
       console.log('Stopping server...');
       execSync(stopCommand, { stdio: argv.debug ? 'inherit' : 'ignore' });
-      const logsPath = join(__dirname, '../logs');
-      if (!isWindows && fs.existsSync(logsPath)) {
-        console.log('chmod logs folder');
-        execSync(`sudo chmod -R 777 ${logsPath}`);
-      }
 
       console.log('Starting server, this will take a while...');
       exec(upCommand);

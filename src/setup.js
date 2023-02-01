@@ -2,7 +2,7 @@ import fs from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import getPort, { portNumbers } from 'get-port';
-
+import { execSync } from 'child_process';
 import minimist from 'minimist';
 
 const argv = minimist(process.argv.slice(2));
@@ -99,7 +99,6 @@ async function UpdateDockerComposeFile() {
     .replaceAll('- 21025:21025/tcp', `- ${ports.serverPort}:21025/tcp`)
     .replaceAll('- 21026:21026', `- ${ports.cliPort}:21026`);
 
-  if (argv.debug) exampleDockerComposeText = exampleDockerComposeText.replace('driver: "local"', 'driver: "json-file"');
   fs.writeFileSync(dockerComposeFile, exampleDockerComposeText);
   console.log('Docker-compose file created');
 }
@@ -121,8 +120,54 @@ export default async function Setup() {
   await UpdateDockerComposeFile();
   updateConfigYmlFile();
   UpdateConfigJsonFile();
+
+  await Commands();
   return {
     ports,
     config: JSON.parse(fs.readFileSync(join(__dirname, '../config.json'))),
   };
 }
+
+async function Commands() {
+  const isWindows = process.platform === 'win32';
+
+  const commands = [
+  ];
+
+  const logsPath = join(__dirname, '../logs');
+  const logsCommands = [];
+  let deletedLogs = false;
+  if (fs.existsSync(logsPath) && argv.deleteLogs) {
+    console.log('deleting logs');
+    if (!isWindows) logsCommands.push({ command: `sudo rm -rf ${logsPath}`, name: 'rm -rf logs' });
+    else logsCommands.push({ command: `rmdir /s /q ${logsPath}`, name: 'rmdir /s /q logs' });
+    deletedLogs = true;
+  }
+
+  if (!isWindows) {
+    if (!fs.existsSync(logsPath) || deletedLogs) {
+      logsCommands.push({
+        command: `sudo mkdir -p ${logsPath}`,
+        name: 'mkdir logs',
+      });
+    }
+    logsCommands.push({
+      command: `sudo chmod -R 777 ${logsPath}`,
+      name: 'chmod logs',
+    });
+  }
+
+  commands.splice(1, 0, ...logsCommands);
+  console.log('\r\nExecuting start commands:');
+  for (let i = 0; i < commands.length; i += 1) {
+    const commandInfo = commands[i];
+    try {
+      console.log(`Running command ${commandInfo.name}`);
+      execSync(commandInfo.command, { stdio: argv.debug ? 'inherit' : 'ignore' });
+    } catch (error) {
+      console.log(`Command ${commandInfo.name} errored`, error);
+      console.log('Stopping setup');
+      process.exit(1);
+    }
+  }
+};
