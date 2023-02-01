@@ -138,9 +138,9 @@ async function Commands() {
   const logsCommands = [];
   let logsExist = fs.existsSync(logsPath);
   if (logsExist && argv.deleteLogs) {
-    console.log('deleting logs');
     if (!isWindows) logsCommands.push({ command: `sudo rm -rf ${logsPath}`, name: 'rm -rf logs' });
     else logsCommands.push({ command: `rmdir ${logsPath} /s /q`, name: 'rmdir /s /q logs' });
+    logsExist = false;
   }
 
   if (!logsExist) {
@@ -149,11 +149,11 @@ async function Commands() {
         command: `sudo mkdir -p ${logsPath}`,
         name: 'mkdir logs',
       });
+      logsCommands.push({
+        command: `sudo chmod -R 777 ${logsPath}`,
+        name: 'chmod logs',
+      });
     }
-    logsCommands.push({
-      command: `sudo chmod -R 777 ${logsPath}`,
-      name: 'chmod logs',
-    });
   }
 
   commands.splice(1, 0, ...logsCommands);
