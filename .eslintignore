@@ -8,3 +8,4 @@ bots/
 **/*.json
 **/*.md
 **/*.yml
+.eslintrc.js
