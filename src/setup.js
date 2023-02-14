@@ -113,21 +113,6 @@ function UpdateConfigJsonFile() {
   console.log('Config.json file created');
 }
 
-export default async function Setup() {
-  ports = await getFreePorts();
-  UpdateBotFolder();
-  UpdateEnvFile();
-  await UpdateDockerComposeFile();
-  updateConfigYmlFile();
-  UpdateConfigJsonFile();
-
-  await Commands();
-  return {
-    ports,
-    config: JSON.parse(fs.readFileSync(join(__dirname, '../config.json'))),
-  };
-}
-
 async function Commands() {
   const isWindows = process.platform === 'win32';
 
@@ -169,4 +154,19 @@ async function Commands() {
       process.exit(1);
     }
   }
-};
+}
+
+export default async function Setup() {
+  ports = await getFreePorts();
+  UpdateBotFolder();
+  UpdateEnvFile();
+  await UpdateDockerComposeFile();
+  updateConfigYmlFile();
+  UpdateConfigJsonFile();
+
+  await Commands();
+  return {
+    ports,
+    config: JSON.parse(fs.readFileSync(join(__dirname, '../config.json'))),
+  };
+}

@@ -6,16 +6,11 @@ import _ from 'lodash';
 import { ScreepsAPI } from 'screeps-api';
 import { exec, execSync } from 'child_process';
 
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import minimist from 'minimist';
 
 let Config;
 const argv = minimist(process.argv.slice(2));
 
-const isWindows = process.platform === 'win32';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const basicCommand = 'docker-compose';
 
 const filter = {
@@ -155,7 +150,10 @@ export default class Helper {
           if (argv.debug) console.log(line);
           if (line.includes('[main] exec: screeps-engine-main')) {
             hitCountMissing -= 1;
-            if (hitCountMissing === 0) resolve();
+            if (hitCountMissing === 0) {
+              child.kill();
+              resolve(true);
+            }
           }
         });
       });
@@ -196,7 +194,10 @@ export default class Helper {
           if (argv.debug) console.log(line);
           if (line.includes('[main] exec: screeps-engine-main')) {
             hitCountMissing -= 1;
-            if (hitCountMissing === 0) resolve();
+            if (hitCountMissing === 0) {
+              child.kill();
+              resolve(true);
+            }
           }
         });
       });
@@ -274,7 +275,7 @@ export default class Helper {
     controllerStatus = newControllerStatus;
 
     try {
-      await fetch(argv.exportUrl, {
+      const response = await fetch(argv.exportUrl, {
         method: 'POST',
         body: JSON.stringify({
           milestones, lastTick, status, commitName, startTime: start, endTime: Date.now(), controllerStatus,
@@ -284,8 +285,9 @@ export default class Helper {
           'Content-Type': 'application/json',
         },
       });
+      console.log(`Exported status results to export url: ${response.status}`);
     } catch (error) {
-      console.log('Failed to export status results to export url, high chance this isn\'t in use');
+      console.log('Failed to export status results to export url');
     }
   }
 
