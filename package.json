@@ -12,8 +12,8 @@
         "screeps-api": "1.16.0"
     },
     "scripts": {
-        "server": "node src/index.js --maxTicks=10000 --maxBots=5 --serverPort=21025 --cliPort=21026",
-        "server-test": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force",
+        "server": "node src/index.js --maxTicks=10000 --maxBots=5 --serverPort=21025 --cliPort=21026 --deleteLogs",
+        "server-test": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force --deleteLogs",
         "lint": "eslint src/**/*",
         "lint:fix": "eslint src/**/* --fix"
     },
@@ -26,7 +26,7 @@
     "bin": {
         "screeps-performance-server": "./bin/setup.js"
     },
-    "version": "1.8.3",
+    "version": "1.8.4",
     "files": [
         "src",
         "bots",
