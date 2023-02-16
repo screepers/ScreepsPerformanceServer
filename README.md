@@ -35,6 +35,7 @@ This is a Screeps server setup that includes milestones and the [Stats mod](http
 - `--cliPort`: change the port the CLI will run on
 - `--force`: force the non-`.example` config files to be overwritten
 - `--debug`: listen to setup Docker logs
+- `--tickDuration`: change the tick duration (default: 100ms)
 
 ## Usage
 

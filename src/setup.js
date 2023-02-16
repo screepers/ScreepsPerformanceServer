@@ -108,7 +108,8 @@ function UpdateConfigJsonFile() {
   if (fs.existsSync(configFile) && !argv.force) return console.log('Config.json file already exists, use --force to overwrite it');
 
   const exampleConfigFile = join(__dirname, '../config.example.json');
-  const exampleConfigText = fs.readFileSync(exampleConfigFile, 'utf8');
+  let exampleConfigText = fs.readFileSync(exampleConfigFile, 'utf8');
+  if (argv.tickDuration) exampleConfigText = exampleConfigText.replaceAll('"tickDuration": 100', `"tickDuration": ${argv.tickDuration}`);
   fs.writeFileSync(configFile, exampleConfigText);
   console.log('Config.json file created');
 }
