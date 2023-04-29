@@ -29,13 +29,33 @@ This is a Screeps server setup that includes milestones and the [Stats mod](http
 
 ### Run commands
 
-- `--maxTicks`: limit the number of ticks the server will run
-- `--maxBots`: limit the number of bots that can be spawned
+#### Config
+
+- `--debug`: listen to setup Docker logs
+- `--force`: force the non-`.example` config files to be overwritten
+- `--botFilePath`: change the path to the bot folder (where the `main.js` file is located or all other .js files are located)
+- `--steamKey`: change the Steam key used to authenticate the bot
+- `--deleteLogs`: delete the logs folder on startup
+
+#### Network
+
 - `--serverPort`: change the port the server will run on
 - `--cliPort`: change the port the CLI will run on
-- `--force`: force the non-`.example` config files to be overwritten
-- `--debug`: listen to setup Docker logs
-- `--tickDuration`: change the tick duration (default: 100ms)
+- `--relayPort`: change the port the relay will run on
+- `--disableMongo`: disable the MongoDB database and use default db instead
+
+#### Server
+
+- `--maxBots`: limit the number of bots that can be spawned
+- `--tickDuration`: change the tick duration (default: 100 (ms)
+- `--maxTickCount`: limit the number of ticks the server will run
+- `--maxTimeDuration`: change the maximum duration of the server in minutes (default: 60 minutes)
+
+#### Exporting
+
+- `--discordWebHookUrl`: send the result to the configured webhook
+- `--discordUsername`: change the username of the webhook message, default: `Screeps Performance Server`
+- `--githubAuth`: add a GitHub token to the request header
 
 ## Usage
 

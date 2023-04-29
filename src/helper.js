@@ -257,40 +257,6 @@ export default class Helper {
     });
   }
 
-  static async sendResult(milestones, status, controllerStatus, lastTick, start) {
-    if (!argv.exportUrl) return;
-    let commitName = 'localhost';
-    if (process.env.GITHUB_EVENT_PATH) {
-      const file = fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8');
-      const object = JSON.parse(file);
-      commitName = object.commits[0].message;
-    }
-
-    const newControllerStatus = [];
-    Object.keys(controllerStatus).forEach((roomName) => {
-      const controller = controllerStatus[roomName];
-      newControllerStatus.push({ roomName, controller });
-    });
-    // eslint-disable-next-line no-param-reassign
-    controllerStatus = newControllerStatus;
-
-    try {
-      const response = await fetch(argv.exportUrl, {
-        method: 'POST',
-        body: JSON.stringify({
-          milestones, lastTick, status, commitName, startTime: start, endTime: Date.now(), controllerStatus,
-        }),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log(`Exported status results to export url: ${response.status}`);
-    } catch (error) {
-      console.log('Failed to export status results to export url');
-    }
-  }
-
   static async executeCliCommand(command, cliPort) {
     try {
       const result = await fetch(`http://${hostname}:${cliPort}/cli`, {

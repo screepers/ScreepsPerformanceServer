@@ -1,6 +1,8 @@
 {
     "name": "screeps-performance-server",
     "dependencies": {
+        "@octokit/core": "^4.2.0",
+        "discord.js": "^14.9.0",
         "dotenv": "^16.0.3",
         "get-port": "^6.1.2",
         "lodash": "^4.17.21",
@@ -12,8 +14,8 @@
         "screeps-api": "1.16.0"
     },
     "scripts": {
-        "server": "node src/index.js --maxTicks=10000 --maxBots=5 --serverPort=21025 --cliPort=21026 --deleteLogs",
-        "server-test": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force --deleteLogs",
+        "server": "node src/index.js --maxTickCount=10000 --maxBots=5 --serverPort=21025 --cliPort=21026 --deleteLogs",
+        "server-test": "node src/index.js --maxTickCount=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force --deleteLogs",
         "lint": "eslint src/**/*",
         "lint:fix": "eslint src/**/* --fix"
     },

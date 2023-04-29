@@ -6,6 +6,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import Setup from './setup.js';
 import Helper from './helper.js';
+import Exporter from './exporter.js';
 
 let Config;
 const argv = minimist(process.argv.slice(2));
@@ -17,15 +18,15 @@ const status = {};
 const controllerStatus = {};
 let lastTick = 0;
 
-const start = Date.now();
+const startTime = Date.now();
 
 process.once('SIGINT', () => {
   console.log('Stop received...');
-  const end = Date.now();
+  const endTime = Date.now();
   console.log('Executing docker-compose stop');
   execSync('docker-compose stop', { stdio: 'ignore' });
 
-  console.log(`${lastTick} ticks elapsed, ${Math.floor((end - start) / 1000)} seconds`);
+  console.log(`${lastTick} ticks elapsed, ${Math.floor((endTime - startTime) / 1000)} seconds`);
   console.log('Status:');
   console.log(JSON.stringify(status, null, 2));
   console.log('Milestones:');
@@ -37,11 +38,11 @@ process.once('SIGINT', () => {
 class Tester {
   roomsSeen = {};
 
-  maxTicks;
+  maxTickCount;
 
   constructor() {
     try {
-      this.maxTicks = argv.maxTicks !== 'undefined' ? argv.maxTicks || 50 * 1000 : 50 * 1000;
+      this.maxTickCount = argv.maxTickCount !== 'undefined' ? argv.maxTickCount || 50 * 1000 : 50 * 1000;
       const maxBots = Math.max(argv.maxBots, 1) || 5;
 
       let rooms = Object.entries(Config.rooms);
@@ -82,7 +83,7 @@ class Tester {
       setTimeout(() => {
         console.log('Timeout reached!');
         process.exit(1);
-      }, Math.min(this.maxTicks + 1000, 20000) * 10000);
+      }, Math.min(Math.min(this.maxTickCount + 1000, 20000) * 10000, (argv.maxTimeDuration || 60) * 60000));
     } catch (e) {
       console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
     }
@@ -96,12 +97,12 @@ class Tester {
       */
   async checkForSuccess(resolve, reject) {
     let appendix = '';
-    if (this.maxTicks > 0) {
-      appendix = ` with runtime ${this.maxTicks} ticks`;
+    if (this.maxTickCount > 0) {
+      appendix = ` with runtime ${this.maxTickCount} ticks`;
     }
     console.log(`> Start the simulation${appendix} on port: ${Config.serverPort}`);
-    if (this.maxTicks > 0) {
-      while (lastTick === undefined || lastTick < this.maxTicks) {
+    if (this.maxTickCount > 0) {
+      while (lastTick === undefined || lastTick < this.maxTickCount) {
         // eslint-disable-next-line no-await-in-loop
         await Helper.sleep(1);
       }
@@ -117,7 +118,7 @@ class Tester {
       const fails = Config.milestones.filter(
         (milestone) => milestone.required && milestone.tick < lastTick && !milestone.success,
       );
-      await Helper.sendResult(Config.milestones, status, controllerStatus, lastTick, start);
+      await Exporter.sendFinalResult(Config.milestones, fails, status, lastTick, startTime);
 
       fails.forEach((fail) => {
         console.log(`${lastTick} Milestone failed ${JSON.stringify(fail)}`);
@@ -171,11 +172,13 @@ class Tester {
             if (milestone.success) {
               console.log('===============================');
               console.log(`${event.data.gameTime} Milestone: Success ${JSON.stringify(milestone)}`);
+              Exporter.sendPeriodicResult(event.data.gameTime, milestone)
             } else {
               console.log('===============================');
               console.log(
                 `${event.data.gameTime} Milestone: Reached too late ${JSON.stringify(milestone)}`,
               );
+              Exporter.sendPeriodicResult(event.data.gameTime, milestone)
             }
           }
         }
@@ -188,6 +191,7 @@ class Tester {
               milestone,
             )} status: ${JSON.stringify(status)}`,
           );
+          Exporter.sendPeriodicResult(event.data.gameTime, milestone)
         }
       }
     }
