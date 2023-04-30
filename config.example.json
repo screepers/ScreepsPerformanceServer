@@ -1,12 +1,9 @@
 {
   "serverPort": 21025,
-  
-  "cliPort":21026,
-
+  "cliPort": 21026,
   "tickDuration": 100,
-
+  "userCpuLimit": 50,
   "playerRooms": { "W1N1": "76561198255104702", "W1N7": "76561198178215469", "W2N5": "76561198092401383" },
-
   "rooms": {
     "W1N1": "bot",
     "W6N1": "bot",
@@ -18,14 +15,12 @@
     "W8N6": "bot",
     "W3N3": "bot"
   },
-
   "trackedRooms": [
     "W1N1",
     "W5N8",
     "W7N3",
     "W2N5"
   ],
-
   "milestones": [
     { "tick": 10000, "check": { "level": 2 }, "required": true },
     { "tick": 15000, "check": { "level": 3 }, "required": false },

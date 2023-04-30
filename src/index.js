@@ -246,7 +246,9 @@ class Tester {
       if (Object.keys(Config.rooms).length === Object.keys(this.roomsSeen).length) {
         Helper.followLog(Config.trackedRooms, Tester.statusUpdater, Config.serverPort);
         await Helper.executeCliCommand('system.resumeSimulation()', Config.cliPort);
-        console.log('Server ready!');
+        
+        await Helper.sleep(10);
+        await Helper.executeCliCommand(`storage.db['users'].update({ },{ $set: { cpu: ${Config.userCpuLimit} }})`, Config.cliPort);
       }
       this.checkForSuccess(resolve, reject);
     });
