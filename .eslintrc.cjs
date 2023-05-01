@@ -3,7 +3,11 @@ module.exports = {
         "browser": true,
         "es2021": true
     },
-    "extends": "airbnb-base",
+    "extends": [
+        "airbnb-base",
+        "prettier"
+    ],
+    "plugins": ["prettier"],
     "overrides": [
     ],
     "parserOptions": {
@@ -15,6 +19,12 @@ module.exports = {
         "no-console":"off",
         "import/extensions":"off",
         "no-underscore-dangle":"off",
-        "no-param-reassign": ["error", { "props": false }]
+        "no-param-reassign": ["error", { "props": false }],
+        "prettier/prettier": [
+            "error",
+            {
+              "endOfLine": "auto"
+            },
+          ],
     }
 }
