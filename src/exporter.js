@@ -125,7 +125,7 @@ export default class Exporter {
       publicity: Publicity.Unlisted,
     });
 
-    return url;
+    return `<${url}>`;
   }
 
   static generatePeriodicMessage(gameTime, milestone) {
