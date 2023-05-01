@@ -168,7 +168,7 @@ export default class Exporter {
         typeof a === "string" ? a : `${JSON.stringify(a) + JSON.stringify(b)}, `
       )}\n` +
       `**Status:** ${JSON.stringify(status)}\n\n` +
-      `**Filtered Logs:** ${pasteBinUrl.replace("https://", "")}\n`
+      `**Filtered Logs:** ${pasteBinUrl}\n`
     );
   }
 
