@@ -1,0 +1,21 @@
+{
+    "rooms.objects": [
+      {
+        "type": "extension",
+        "room": "W2N1",
+        "x": 17,
+        "y": 10,
+        "name": "SpawnSpawned",
+        "username": "W1N12",
+        "store": {
+          "energy": 3000
+        },
+        "storeCapacityResource": {
+          "energy": 3000
+        },
+        "hits": 50000,
+        "hitsMax": 100000
+      }
+    ]
+  }
+  

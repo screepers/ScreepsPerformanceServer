@@ -110,10 +110,9 @@ export default class Exporter {
     if (fs.existsSync("./logs/logListener.log", "utf8")) {
       const fileText = fs.readFileSync("./logs/logListener.log", "utf8");
       const fileLineCount = fileText.split("\n").length;
-      return {success: true, text: fileText, lineCount: fileLineCount}
-
+      return { success: true, text: fileText, lineCount: fileLineCount };
     }
-    return {success:false, text:"No log dump file found"};
+    return { success: false, text: "No log dump file found" };
   }
 
   static async createPasteBinUrl(content) {
@@ -129,11 +128,9 @@ export default class Exporter {
         publicity: Publicity.Unlisted,
       });
       return `<${url}>`;
+    } catch (error) {
+      return "ERROR";
     }
-    catch (error) {
-      return "ERROR"
-    }
-
   }
 
   static generatePeriodicMessage(gameTime, milestone) {
@@ -165,7 +162,8 @@ export default class Exporter {
     return (
       "**Performance Test Results**\n" +
       `**Commit:** ${this.commitName}\n` +
-      `**Fails:** ${fails.length === 0 ? "No fails!" : `${fails.length} fails`
+      `**Fails:** ${
+        fails.length === 0 ? "No fails!" : `${fails.length} fails`
       }\n` +
       `**Time:** ${new Date(startTime).toISOString()} - ${new Date(
         endTime
@@ -176,7 +174,9 @@ export default class Exporter {
         typeof a === "string" ? a : `${JSON.stringify(a) + JSON.stringify(b)}, `
       )}\n` +
       `**Status:** ${JSON.stringify(status)}\n\n` +
-      `**Filtered Logs:**${pasteBinUrl} ${loggerFileLineCount ? ` (${loggerFileLineCount} logs)` : ""} \n`
+      `**Filtered Logs:**${pasteBinUrl} ${
+        loggerFileLineCount ? ` (${loggerFileLineCount} logs)` : ""
+      } \n`
     );
   }
 
