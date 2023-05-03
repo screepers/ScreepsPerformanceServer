@@ -5,7 +5,7 @@ import minimist from "minimist";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 /* eslint-disable-next-line */
-import DbImporter from "./importer/index.js";
+import CasePathImporter from "screeps-db-importer";
 import Setup from "./setup.js";
 import Helper from "./helper.js";
 import Exporter from "./exporter.js";
@@ -303,7 +303,7 @@ class Tester {
         Object.keys(Config.rooms).length === Object.keys(this.roomsSeen).length
       ) {
         Helper.followLog(Config.trackedRooms, Tester.statusUpdater);
-        await DbImporter("./src/importer/cases/default/performanceServer.json");
+        await CasePathImporter("default/performanceServer", {serverPort: Config.serverPort, cliPort: Config.cliPort});
 
         await Helper.executeCliCommand(
           "system.resumeSimulation()",
