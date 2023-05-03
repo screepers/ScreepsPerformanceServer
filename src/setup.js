@@ -160,7 +160,7 @@ export function RemoveLogs() {
     logsExist = false;
   }
 
-  if (!logsExist) mkdirSync(logsPath, { recursive: true, mode: 0o777 })
+  if (!logsExist) fs.mkdirSync(logsPath, { recursive: true, mode: 0o777 })
 }
 
 export default async function Setup() {
