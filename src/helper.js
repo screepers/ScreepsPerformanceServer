@@ -4,6 +4,7 @@ import _ from "lodash";
 
 import { ScreepsAPI } from "screeps-api";
 import { exec, execSync } from "child_process";
+import {RemoveLogs} from "./setup.js";
 
 import minimist from "minimist";
 import winston from "winston";
@@ -165,6 +166,7 @@ export default class Helper {
       console.log("\r\nProcess: Starting server...");
       console.log("Stopping server...");
       execSync(stopCommand, { stdio: argv.debug ? "inherit" : "ignore" });
+      RemoveLogs()
 
       console.log("Starting server, this will take a while...");
       exec(upCommand);

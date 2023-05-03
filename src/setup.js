@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { mkdirSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import getPort, { portNumbers } from "get-port";
@@ -152,56 +152,15 @@ function UpdateConfigJsonFile() {
   console.log("Config.json file created");
 }
 
-async function Commands() {
-  const isWindows = process.platform === "win32";
-
-  const commands = [];
-
+export function RemoveLogs() {
   const logsPath = join(__dirname, "../logs");
-  const logsCommands = [];
   let logsExist = fs.existsSync(logsPath);
   if (logsExist && argv.deleteLogs) {
-    if (!isWindows)
-      logsCommands.push({
-        command: `sudo rm -rf ${logsPath}`,
-        name: "rm -rf logs",
-      });
-    else
-      logsCommands.push({
-        command: `rmdir ${logsPath} /s /q`,
-        name: "rmdir /s /q logs",
-      });
+    fs.rmdirSync(logsPath, { recursive: true });
     logsExist = false;
   }
 
-  if (!logsExist) {
-    if (!isWindows) {
-      logsCommands.push({
-        command: `sudo mkdir -p ${logsPath}`,
-        name: "mkdir logs",
-      });
-      logsCommands.push({
-        command: `sudo chmod -R 777 ${logsPath}`,
-        name: "chmod logs",
-      });
-    }
-  }
-
-  commands.splice(1, 0, ...logsCommands);
-  console.log("\r\nExecuting start commands:");
-  for (let i = 0; i < commands.length; i += 1) {
-    const commandInfo = commands[i];
-    try {
-      console.log(`Running command ${commandInfo.name}`);
-      execSync(commandInfo.command, {
-        stdio: argv.debug ? "inherit" : "ignore",
-      });
-    } catch (error) {
-      console.log(`Command ${commandInfo.name} errored`, error);
-      console.log("Stopping setup");
-      process.exit(1);
-    }
-  }
+  if (!logsExist) mkdirSync(logsPath, { recursive: true, mode: 0o777 })
 }
 
 export default async function Setup() {
@@ -212,7 +171,6 @@ export default async function Setup() {
   updateConfigYmlFile();
   UpdateConfigJsonFile();
 
-  await Commands();
   return {
     ports,
     config: JSON.parse(fs.readFileSync(join(__dirname, "../config.json"))),
