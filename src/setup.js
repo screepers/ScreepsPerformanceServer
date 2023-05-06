@@ -1,8 +1,7 @@
-import fs, { mkdirSync } from "fs";
+import fs from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import getPort, { portNumbers } from "get-port";
-import { execSync } from "child_process";
 import minimist from "minimist";
 
 const argv = minimist(process.argv.slice(2));
@@ -156,11 +155,11 @@ export function RemoveLogs() {
   const logsPath = join(__dirname, "../logs");
   let logsExist = fs.existsSync(logsPath);
   if (logsExist && argv.deleteLogs) {
-    fs.rmdirSync(logsPath, { recursive: true });
+    fs.rmdirSync(logsPath, { recursive: true});
     logsExist = false;
   }
 
-  if (!logsExist) fs.mkdirSync(logsPath, { recursive: true, mode: 0o777 })
+  if (!logsExist) fs.mkdirSync(logsPath, { recursive: true, mode: 0o666 });
 }
 
 export default async function Setup() {

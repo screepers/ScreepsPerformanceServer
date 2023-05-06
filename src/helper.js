@@ -4,10 +4,10 @@ import _ from "lodash";
 
 import { ScreepsAPI } from "screeps-api";
 import { exec, execSync } from "child_process";
-import {RemoveLogs} from "./setup.js";
 
 import minimist from "minimist";
 import winston from "winston";
+import { RemoveLogs } from "./setup.js";
 
 let Config;
 const argv = minimist(process.argv.slice(2));
@@ -82,11 +82,13 @@ export default class Helper {
       api.socket.on("auth", () => {});
       api.socket.subscribe(`room:${room}`, statusUpdater);
       api.socket.subscribe("console", (event) => {
-        event.data.messages.log
-          .filter((msg) => msg.includes("<p style='color:#bb3d3d;'>"))
-          .forEach((msg) => {
-            logger.debug(msg);
-          });
+        if (event.data.messages) {
+          event.data.messages.log
+            .filter((msg) => msg.includes("<p style='color:#bb3d3d;'>"))
+            .forEach((msg) => {
+              logger.debug(msg);
+            });
+        }
       });
     });
   }
@@ -166,7 +168,7 @@ export default class Helper {
       console.log("\r\nProcess: Starting server...");
       console.log("Stopping server...");
       execSync(stopCommand, { stdio: argv.debug ? "inherit" : "ignore" });
-      RemoveLogs()
+      RemoveLogs();
 
       console.log("Starting server, this will take a while...");
       exec(upCommand);

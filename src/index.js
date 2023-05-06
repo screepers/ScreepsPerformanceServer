@@ -91,10 +91,15 @@ class Tester {
         controllerStatus[room] = {};
       }
 
+      const minMaxRunTime = 60 * 60 * 1000;
+      const currentRunMaxRunTime = (this.maxTickCount + 2500) * 5 * 1000;
+      const actualMaxRunTime = argv.maxTimeDuration
+        ? argv.maxTimeDuration * 60 * 1000
+        : Math.max(minMaxRunTime, currentRunMaxRunTime);
       setTimeout(() => {
         console.log("Timeout reached!");
         process.exit(1);
-      }, Math.min(Math.min(this.maxTickCount + 1000, 20000) * 10000, (argv.maxTimeDuration || 60) * 60000));
+      }, actualMaxRunTime);
     } catch (e) {
       console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
     }
@@ -112,7 +117,7 @@ class Tester {
       appendix = ` with runtime ${this.maxTickCount} ticks`;
     }
     console.log(
-      `> Start the simulation${appendix} on port: ${Config.serverPort}`
+      `> Start the simulation${appendix} on port ${Config.serverPort}`
     );
     if (this.maxTickCount > 0) {
       while (lastTick === undefined || lastTick < this.maxTickCount) {
@@ -203,7 +208,7 @@ class Tester {
                   milestone
                 )}`
               );
-              Exporter.sendPeriodicResult(event.data.gameTime, milestone);
+              Exporter.sendPeriodicResult(event.data.gameTime, milestone, startTime);
             } else {
               console.log("===============================");
               console.log(
@@ -211,7 +216,7 @@ class Tester {
                   event.data.gameTime
                 } Milestone: Reached too late ${JSON.stringify(milestone)}`
               );
-              Exporter.sendPeriodicResult(event.data.gameTime, milestone);
+              Exporter.sendPeriodicResult(event.data.gameTime, milestone, startTime);
             }
           }
         }
@@ -224,7 +229,7 @@ class Tester {
               milestone
             )} status: ${JSON.stringify(status)}`
           );
-          Exporter.sendPeriodicResult(event.data.gameTime, milestone);
+          Exporter.sendPeriodicResult(event.data.gameTime, milestone, startTime);
         }
       }
     }
@@ -303,8 +308,11 @@ class Tester {
         Object.keys(Config.rooms).length === Object.keys(this.roomsSeen).length
       ) {
         Helper.followLog(Config.trackedRooms, Tester.statusUpdater);
-        await CasePathImporter("default/performanceServer", {serverPort: Config.serverPort, cliPort: Config.cliPort});
-
+        await Helper.sleep(10);
+        await CasePathImporter("default/performanceServer", {
+          serverPort: Config.serverPort,
+          cliPort: Config.cliPort,
+        });
         await Helper.executeCliCommand(
           "system.resumeSimulation()",
           Config.cliPort
