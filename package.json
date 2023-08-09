@@ -1,19 +1,26 @@
 {
     "name": "screeps-performance-server",
+    "version": "1.10.5",
     "dependencies": {
+        "@octokit/core": "^4.2.0",
+        "discord.js": "^14.9.0",
         "dotenv": "^16.0.3",
         "get-port": "^6.1.2",
+        "json-beautify": "^1.1.1",
         "lodash": "^4.17.21",
         "minimist": "^1.2.7",
         "ncp": "^2.0.0",
         "node-fetch": "^2.6.7",
         "node-powershell": "^5.0.1",
+        "pastebin-api": "^5.1.6",
         "q": "^1.5.1",
-        "screeps-api": "1.16.0"
+        "screeps-api": "1.16.0",
+        "screeps-db-importer": "latest",
+        "winston": "^3.8.2"
     },
     "scripts": {
-        "server": "node src/index.js --maxTicks=10000 --maxBots=5 --serverPort=21025 --cliPort=21026",
-        "server-test": "node src/index.js --maxTicks=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force",
+        "server": "node src/index.js --maxTickCount=10000 --maxBots=5 --serverPort=21025 --cliPort=21026 --deleteLogs",
+        "server-test": "node src/index.js --maxTickCount=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force --deleteLogs",
         "lint": "eslint src/**/*",
         "lint:fix": "eslint src/**/* --fix"
     },
@@ -21,12 +28,13 @@
     "devDependencies": {
         "eslint": "^8.23.1",
         "eslint-config-airbnb-base": "^15.0.0",
-        "eslint-plugin-import": "^2.26.0"
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-prettier": "^4.2.1"
     },
     "bin": {
         "screeps-performance-server": "./bin/setup.js"
     },
-    "version": "1.8.0",
     "files": [
         "src",
         "bots",

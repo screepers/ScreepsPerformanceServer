@@ -15,7 +15,7 @@ services:
             REDIS_HOST: redis
         restart: unless-stopped
         logging:
-               driver: "local"
+               driver: "json-file"
     mongo:
         image: mongo
         volumes:
