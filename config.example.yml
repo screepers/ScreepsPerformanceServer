@@ -1,4 +1,8 @@
 steamKey: http://steamcommunity.com/dev/apikey
+pinnedPackages:
+  ssri: 8.0.1
+  cacache: 16.1.3
+  passport-steam: 1.0.17
 mods:
 - screepsmod-auth
 - screepsmod-admin-utils
