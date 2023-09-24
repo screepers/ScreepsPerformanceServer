@@ -208,7 +208,11 @@ class Tester {
                   milestone
                 )}`
               );
-              Exporter.sendPeriodicResult(event.data.gameTime, milestone, startTime);
+              Exporter.sendPeriodicResult(
+                event.data.gameTime,
+                milestone,
+                startTime
+              );
             } else {
               console.log("===============================");
               console.log(
@@ -216,7 +220,11 @@ class Tester {
                   event.data.gameTime
                 } Milestone: Reached too late ${JSON.stringify(milestone)}`
               );
-              Exporter.sendPeriodicResult(event.data.gameTime, milestone, startTime);
+              Exporter.sendPeriodicResult(
+                event.data.gameTime,
+                milestone,
+                startTime
+              );
             }
           }
         }
@@ -229,7 +237,11 @@ class Tester {
               milestone
             )} status: ${JSON.stringify(status)}`
           );
-          Exporter.sendPeriodicResult(event.data.gameTime, milestone, startTime);
+          Exporter.sendPeriodicResult(
+            event.data.gameTime,
+            milestone,
+            startTime
+          );
         }
       }
     }

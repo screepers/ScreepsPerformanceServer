@@ -155,7 +155,7 @@ export function RemoveLogs() {
   const logsPath = join(__dirname, "../logs");
   let logsExist = fs.existsSync(logsPath);
   if (logsExist && argv.deleteLogs) {
-    fs.rmdirSync(logsPath, { recursive: true});
+    fs.rmdirSync(logsPath, { recursive: true });
     logsExist = false;
   }
 

@@ -177,16 +177,21 @@ export default class Exporter {
     const timeRun = (endTime - startTime) / 1000 / 60 / 60; // in hours
 
     const loggerText = loggerFile.success
-      ? `**Filtered Logs:** ${loggerFile.pasteBinUrl} (${loggerFile.lineCount - 1} logs)\n`
+      ? `**Filtered Logs:** ${loggerFile.pasteBinUrl} (${
+          loggerFile.lineCount - 1
+        } logs)\n`
       : "**Filtered Logs:** No log dump file found\n";
     const historyText = historyFile.success
-      ? `**Milestone History:** ${historyFile.pasteBinUrl} (${historyFile.lineCount - 1} logs)\n`
+      ? `**Milestone History:** ${historyFile.pasteBinUrl} (${
+          historyFile.lineCount - 1
+        } logs)\n`
       : "**Milestone History:** No history file found\n";
 
     return (
       `**Performance Test Results**\n` +
       `**Commit:** ${this.commitName}\n` +
-      `**Fails:** ${fails.length === 0 ? "No fails!" : `${fails.length} fails`
+      `**Fails:** ${
+        fails.length === 0 ? "No fails!" : `${fails.length} fails`
       }\n` +
       `**Game Time :** ${lastTickNumber}\n` +
       `**Time:** Start: ${new Date(startTime).toISOString()} - End: ${new Date(
@@ -194,14 +199,25 @@ export default class Exporter {
       ).toISOString()}\n` +
       `**Time Run:** ${timeRun.toFixed(2)} hours\n\n` +
       `**Milestones:** \n\n\`\`\`json\n${milestones.reduce((a, b) =>
-        typeof a === "string" ? a : `${beautify(a, null, 2, 80) + beautify(b, null, 2, 80)}, `
+        typeof a === "string"
+          ? a
+          : `${beautify(a, null, 2, 80) + beautify(b, null, 2, 80)}, `
       )}\`\`\`\n` +
-      `**Status:** \n\`\`\`json\n${beautify(status, null, 2, 80)}\`\`\`\n\n${loggerText}${historyText}`
+      `**Status:** \n\`\`\`json\n${beautify(
+        status,
+        null,
+        2,
+        80
+      )}\`\`\`\n\n${loggerText}${historyText}`
     );
   }
 
   static async sendPeriodicResult(gameTime, milestone, startTime) {
-    const message = this.generatePeriodicMessage(gameTime, milestone, startTime);
+    const message = this.generatePeriodicMessage(
+      gameTime,
+      milestone,
+      startTime
+    );
     await this.sendDiscordWebHook(message);
     await this.sendGithubComment(message);
   }
@@ -222,10 +238,17 @@ export default class Exporter {
       status,
       lastTickNumber,
       startTime,
-      { pasteBinUrl: await this.createPasteBinUrl(logs.text), lineCount: logs.lineCount, success: logs.success },
-      { pasteBinUrl: await this.createPasteBinUrl(history.text), lineCount: history.lineCount, success: history.success }
-    
-      );
+      {
+        pasteBinUrl: await this.createPasteBinUrl(logs.text),
+        lineCount: logs.lineCount,
+        success: logs.success,
+      },
+      {
+        pasteBinUrl: await this.createPasteBinUrl(history.text),
+        lineCount: history.lineCount,
+        success: history.success,
+      }
+    );
     await this.sendDiscordWebHook(message, false);
     await this.sendGithubComment(message, false);
   }
