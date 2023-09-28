@@ -321,10 +321,10 @@ class Tester {
       ) {
         Helper.followLog(Config.trackedRooms, Tester.statusUpdater);
         await Helper.sleep(10);
-        await CasePathImporter("default/performanceServer", {
-          serverPort: Config.serverPort,
-          cliPort: Config.cliPort,
-        });
+        // await CasePathImporter("default/performanceServer", {
+        //   serverPort: Config.serverPort,
+        //   cliPort: Config.cliPort,
+        // });
         await Helper.executeCliCommand(
           "system.resumeSimulation()",
           Config.cliPort
