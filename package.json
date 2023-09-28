@@ -19,7 +19,7 @@
 		"winston": "^3.8.2"
 	},
 	"scripts": {
-		"server": "node src/index.js --maxTickCount=10000 --maxBots=5 --serverPort=21025 --cliPort=21026 --deleteLogs",
+		"server": "node src/index.js --maxTickCount=25000 --maxBots=5 --serverPort=21025 --cliPort=21026 --deleteLogs",
 		"server-test": "node src/index.js --maxTickCount=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force --deleteLogs",
 		"lint": "eslint src/**/*",
 		"lint:fix": "eslint src/**/* --fix"
