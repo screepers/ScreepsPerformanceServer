@@ -45,18 +45,19 @@ function UpdateBotFolder() {
   }
 
   const filesInNewBotFolder = fs.readdirSync(newBotFolder);
-  const botFiles = filesInNewBotFolder.filter((file) => file.endsWith(".js"));
-  if (botFiles.length === 0) {
+  if (filesInNewBotFolder.length === 0) {
     console.log("No bot files found in the provided folder");
     throw new Error("No bot files found");
   }
 
-  botFiles.forEach((fileName) => {
+  filesInNewBotFolder.forEach((fileName) => {
     const file = fs.readFileSync(join(newBotFolder, fileName), "utf8");
     fs.writeFileSync(join(botFolder, fileName), file);
   });
 
-  console.log(`Replaced bot folder with an total of ${botFiles.length} files`);
+  console.log(
+    `Replaced bot folder with an total of ${filesInNewBotFolder.length} files`
+  );
 }
 
 // eslint-disable-next-line consistent-return
