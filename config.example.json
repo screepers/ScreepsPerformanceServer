@@ -5,6 +5,8 @@
 
 	"tickDuration": 100,
 
+	"userCpuLimit": 100,
+
 	"playerRooms": {
 		"W1N1": "76561198255104702",
 		"W1N7": "76561198178215469",
