@@ -68,8 +68,12 @@ export default class Exporter {
   }
 
   static async sendGithubComment(content, isPeriodic = true) {
-    if (!argv.githubAuth || !this.githubCommit || !argv.githubOwner 
-      || !argv.githubRepo) {
+    if (
+      !argv.githubAuth ||
+      !this.githubCommit ||
+      !argv.githubOwner ||
+      !argv.githubRepo
+    ) {
       return;
     }
 
