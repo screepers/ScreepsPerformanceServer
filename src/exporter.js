@@ -8,9 +8,10 @@ import beautify from "json-beautify";
 
 const argv = minimist(process.argv.slice(2));
 
-const username = argv.discordUsername || "Screeps Performance Server";
-const avatarURL =
-  "https://user-images.githubusercontent.com/48334001/189509241-7f04fe66-a5bc-4791-ada7-4f948794ceb0.png";
+const discordUsername = argv.discordUsername || "Screeps Performance Server";
+const avatarURL = argv.discordAvatarUrl || undefined;
+const githubOwner = argv.githubOwner || undefined;
+const githubRepo = argv.githubRepo || undefined;
 
 export default class Exporter {
   static discordMessage = null;
@@ -45,7 +46,7 @@ export default class Exporter {
 
     try {
       const data = {
-        username: username + (isPeriodic ? " - Periodic " : " - Final"),
+        username: discordUsername + (isPeriodic ? " - Periodic " : " - Final"),
         avatarURL,
         content,
       };
@@ -67,7 +68,10 @@ export default class Exporter {
   }
 
   static async sendGithubComment(content, isPeriodic = true) {
-    if (!argv.githubAuth || !this.githubCommit) return;
+    if (!argv.githubAuth || !this.githubCommit || !argv.githubOwner 
+      || !argv.githubRepo) {
+      return;
+    }
 
     if (!this.octokit) {
       this.octokit = new Octokit({
@@ -91,8 +95,8 @@ export default class Exporter {
 
     try {
       const response = await this.octokit.request(url, {
-        owner: "The-International-Screeps-Bot",
-        repo: "The-International-Open-Source",
+        owner: githubOwner,
+        repo: githubRepo,
         issue_number: this.githubCommit.number,
         body,
         comment_id: this.githubCommit ? this.githubCommit.data.id : null,

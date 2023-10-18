@@ -55,6 +55,9 @@ This is a Screeps server setup that includes milestones and the [Stats mod](http
 
 - `--discordWebHookUrl`: send the result to the configured webhook
 - `--discordUsername`: change the username of the webhook message, default: `Screeps Performance Server`
+- `--discordAvatarUrl`: change the avatar url of the webhook message, default: none
+- `--githubOwner`: username of the GitHub user that owns the repo to report to
+- `--githubRepo`: name of the repo on GitHub to report to
 - `--githubAuth`: add a GitHub token to the request header
 - `--pasteBinUrlDevKey`: add a PasteBin dev key to send the result to PasteBin
 - `--logFilter`: filter the logs by a string and export them to an file called `logListener` in logs folder
