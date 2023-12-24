@@ -78,8 +78,8 @@ export default class Helper {
       await api.auth();
 
       api.socket.connect();
-      api.socket.on("connected", () => {});
-      api.socket.on("auth", () => {});
+      api.socket.on("connected", () => { });
+      api.socket.on("auth", () => { });
       api.socket.subscribe(`room:${room}`, statusUpdater);
       api.socket.subscribe("console", (event) => {
         if (event.data.messages) {
@@ -156,7 +156,7 @@ export default class Helper {
    * @return {object}
    */
   static async startServer() {
-    const stopCommand = `${basicCommand} down --volumes --remove-orphans`;
+    const stopCommand = `${basicCommand} down --volumes --remove-orphans --rmi`;
     const upCommand = `${basicCommand} up`;
     const serverLogsCommand = `${basicCommand} logs -f screeps`;
 
