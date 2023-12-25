@@ -156,7 +156,7 @@ export default class Helper {
    * @return {object}
    */
   static async startServer() {
-    const stopCommand = `${basicCommand} down --volumes --remove-orphans --rmi`;
+    const stopCommand = `${basicCommand} down --volumes --remove-orphans --rmi all`;
     const upCommand = `${basicCommand} up`;
     const serverLogsCommand = `${basicCommand} logs -f screeps`;
 
