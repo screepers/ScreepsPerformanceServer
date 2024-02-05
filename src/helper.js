@@ -78,8 +78,8 @@ export default class Helper {
       await api.auth();
 
       api.socket.connect();
-      api.socket.on("connected", () => {});
-      api.socket.on("auth", () => {});
+      api.socket.on("connected", () => { });
+      api.socket.on("auth", () => { });
       api.socket.subscribe(`room:${room}`, statusUpdater);
       api.socket.subscribe("console", (event) => {
         if (event.data.messages) {
@@ -171,7 +171,10 @@ export default class Helper {
       RemoveLogs();
 
       console.log("Starting server, this will take a while...");
-      exec(upCommand);
+      try {
+        execSync("mkdir ./logs && chmod 777 ./logs")
+      } catch { }
+      execSync(upCommand);
       await this.sleep(10);
 
       let hitCountMissing = 1;

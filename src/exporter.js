@@ -78,8 +78,8 @@ export default class Helper {
       await api.auth();
 
       api.socket.connect();
-      api.socket.on("connected", () => {});
-      api.socket.on("auth", () => {});
+      api.socket.on("connected", () => { });
+      api.socket.on("auth", () => { });
       api.socket.subscribe(`room:${room}`, statusUpdater);
       api.socket.subscribe("console", (event) => {
         if (event.data.messages) {
@@ -147,105 +147,6 @@ export default class Helper {
   static sleep(seconds) {
     // eslint-disable-next-line no-promise-executor-return
     return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
-  }
-
-  /**
-   * startServer method
-   *
-   * Starts the private server
-   * @return {object}
-   */
-  static async startServer() {
-    const stopCommand = `${basicCommand} down --volumes --remove-orphans --rmi all`;
-    const upCommand = `${basicCommand} up -d`;
-    const serverLogsCommand = `${basicCommand} logs -f screeps`;
-
-    const maxTime = new Promise((resolve) => {
-      setTimeout(resolve, 30 * 60 * 1000, "Timeout");
-    });
-
-    const startServer = new Promise(async (resolve) => {
-      console.log("\r\nProcess: Starting server...");
-      console.log("Stopping server...");
-      execSync(stopCommand, { stdio: argv.debug ? "inherit" : "ignore" });
-      RemoveLogs();
-
-      console.log("Starting server, this will take a while...");
-      execSync(upCommand);
-      await this.sleep(10);
-
-      let hitCountMissing = 1;
-      const child = exec(serverLogsCommand, { stdio: "pipe" });
-      child.stdout.on("data", (data) => {
-        const lines = data ? data.split(/(\r?\n)/g) : [];
-        lines.forEach((line) => {
-          if (argv.debug) console.log(line);
-          if (line.includes("[main] exec: screeps-engine-main")) {
-            hitCountMissing -= 1;
-            if (hitCountMissing === 0) {
-              child.kill();
-              resolve(true);
-            }
-          }
-        });
-      });
-    });
-    return Promise.race([startServer, maxTime])
-      .then((result) => {
-        if (result === "Timeout") {
-          console.log("Timeout starting server!");
-          return false;
-        }
-        return true;
-      })
-      .catch((result) => {
-        console.error("error", { data: result });
-        return false;
-      });
-  }
-
-  static async restartServer() {
-    const restartCommand = `${basicCommand} restart screeps`;
-    const serverLogsCommand = `${basicCommand} logs -f screeps`;
-
-    const maxTime = new Promise((resolve) => {
-      setTimeout(resolve, 30 * 60 * 1000, "Timeout");
-    });
-
-    const restartServer = new Promise(async (resolve) => {
-      console.log("\r\nProcess: Restart server...");
-      console.log("Restarting server...\r\n");
-      exec(restartCommand);
-      await this.sleep(10);
-
-      let hitCountMissing = 2;
-      const child = exec(serverLogsCommand, { stdio: "pipe" });
-      child.stdout.on("data", (data) => {
-        const lines = data ? data.split(/(\r?\n)/g) : [];
-        lines.forEach((line) => {
-          if (argv.debug) console.log(line);
-          if (line.includes("[main] exec: screeps-engine-main")) {
-            hitCountMissing -= 1;
-            if (hitCountMissing === 0) {
-              child.kill();
-              resolve(true);
-            }
-          }
-        });
-      });
-    });
-    return Promise.race([restartServer, maxTime])
-      .then((result) => {
-        if (result === "Timeout") {
-          console.log("Timeout starting server!");
-          return false;
-        }
-        return true;
-      })
-      .catch((result) => {
-        console.error("error", { data: result });
-        return false;
-      });
   }
 
   static initControllerID(event, status, controllerRooms) {
