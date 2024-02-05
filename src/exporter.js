@@ -9,7 +9,9 @@ import beautify from "json-beautify";
 const argv = minimist(process.argv.slice(2));
 
 const discordUsername = argv.discordUsername || "Screeps Performance Server";
-const avatarURL = argv.discordAvatarUrl || "https://user-images.githubusercontent.com/48334001/189509241-7f04fe66-a5bc-4791-ada7-4f948794ceb0.png";
+const avatarURL =
+  argv.discordAvatarUrl ||
+  "https://user-images.githubusercontent.com/48334001/189509241-7f04fe66-a5bc-4791-ada7-4f948794ceb0.png";
 const githubOwner = argv.githubOwner || "The-International-Screeps-Bot";
 const githubRepo = argv.githubRepo || "The-International-Open-Source";
 export default class Exporter {
@@ -184,18 +186,21 @@ export default class Exporter {
     const timeRun = (endTime - startTime) / 1000 / 60 / 60; // in hours
 
     const loggerText = loggerFile.success
-      ? `**Filtered Logs:** ${loggerFile.pasteBinUrl} (${loggerFile.lineCount - 1
-      } logs)\n`
+      ? `**Filtered Logs:** ${loggerFile.pasteBinUrl} (${
+          loggerFile.lineCount - 1
+        } logs)\n`
       : "**Filtered Logs:** No log dump file found\n";
     const historyText = historyFile.success
-      ? `**Milestone History:** ${historyFile.pasteBinUrl} (${historyFile.lineCount - 1
-      } logs)\n`
+      ? `**Milestone History:** ${historyFile.pasteBinUrl} (${
+          historyFile.lineCount - 1
+        } logs)\n`
       : "**Milestone History:** No history file found\n";
 
     return (
       `**Performance Test Results**\n` +
       `**Commit:** ${this.commitName}\n` +
-      `**Fails:** ${fails.length === 0 ? "No fails!" : `${fails.length} fails`
+      `**Fails:** ${
+        fails.length === 0 ? "No fails!" : `${fails.length} fails`
       }\n` +
       `**Game Time :** ${lastTickNumber}\n` +
       `**Time:** Start: ${new Date(startTime).toISOString()} - End: ${new Date(
