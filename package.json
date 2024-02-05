@@ -1,6 +1,6 @@
 {
 	"name": "screeps-performance-server",
-	"version": "1.12.3",
+	"version": "1.12.4",
 	"dependencies": {
 		"@octokit/core": "^4.2.0",
 		"discord.js": "^14.9.0",
