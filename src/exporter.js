@@ -3,11 +3,9 @@ import fetch from "node-fetch";
 import _ from "lodash";
 
 import { ScreepsAPI } from "screeps-api";
-import { exec, execSync } from "child_process";
 
 import minimist from "minimist";
 import winston from "winston";
-import { RemoveLogs } from "./setup.js";
 
 let Config;
 const argv = minimist(process.argv.slice(2));
@@ -23,8 +21,6 @@ const logger = winston.createLogger({
     }),
   ],
 });
-
-const basicCommand = "docker-compose";
 
 const filter = {
   controller: (o) => {
@@ -78,8 +74,8 @@ export default class Helper {
       await api.auth();
 
       api.socket.connect();
-      api.socket.on("connected", () => { });
-      api.socket.on("auth", () => { });
+      api.socket.on("connected", () => {});
+      api.socket.on("auth", () => {});
       api.socket.subscribe(`room:${room}`, statusUpdater);
       api.socket.subscribe("console", (event) => {
         if (event.data.messages) {
