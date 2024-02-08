@@ -4,6 +4,7 @@
 	"dependencies": {
 		"@octokit/core": "^4.2.0",
 		"discord.js": "^14.9.0",
+		"dockerode": "^4.0.2",
 		"dotenv": "^16.0.3",
 		"get-port": "^6.1.2",
 		"json-beautify": "^1.1.1",
@@ -20,7 +21,7 @@
 	},
 	"scripts": {
 		"server": "node src/index.js --maxTickCount=25000 --maxBots=5 --serverPort=21025 --cliPort=21026 --deleteLogs",
-		"server-test": "node src/index.js --maxTickCount=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force --deleteLogs",
+		"server-test": "node src/index.js --maxTickCount=50000 --maxBots=5 --serverPort=21025 --cliPort=21026 --force --deleteLogs --debug",
 		"lint": "eslint src/**/*",
 		"lint:fix": "eslint src/**/* --fix"
 	},

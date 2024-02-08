@@ -2,7 +2,9 @@ version: '3'
 services:
     screeps:
         image: screepers/screeps-launcher
+        container_name: screeps_performance_server
         volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
             - ./config.yml:/screeps/config.yml
             - ./bots:/screeps/bots
             - screeps-data:/screeps
