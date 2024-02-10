@@ -1,5 +1,7 @@
 # Screeps-Performance-Server
 
+**Windows not supported, contact Panda for support**
+
 This is a Screeps server setup that includes milestones and the [Stats mod](https://github.com/The-International-Screeps-Bot/screepsmod-server-stats) built in. It was originally created by [TooAngel](https://github.com/TooAngel) and this version includes data export for the milestones results. The exported data includes:
 
 1. Milestones reached
