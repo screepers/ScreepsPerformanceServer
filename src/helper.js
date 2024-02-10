@@ -206,10 +206,10 @@ export default class Helper {
             RemoveLogs();
 
             console.log("Starting server, this will take a while...");
-            //   try {
-            //     execSync("mkdir -p ./logs && chmod 777 ./logs");
-            //     // eslint-disable-next-line no-empty
-            //   } catch { }
+            try {
+                execSync("mkdir -p ./logs && chmod 777 ./logs");
+                // eslint-disable-next-line no-empty
+            } catch { }
             const upCommand = `${basicCommand} up -d`;
             execSync(upCommand);
             await this.sleep(10);
