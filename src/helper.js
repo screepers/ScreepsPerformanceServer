@@ -60,15 +60,15 @@ export default class Helper {
     }
 
     /**
-     * followLog method
-     *
-     * Connects to the api and reads and prints the console log, if messages
-     * are available
-     *
-     * @param {list} rooms - The rooms
-     * @param {function} statusUpdater - Function to handle status updates
-     * @return {undefined}
-     */
+   * followLog method
+   *
+   * Connects to the api and reads and prints the console log, if messages
+   * are available
+   *
+   * @param {list} rooms - The rooms
+   * @param {function} statusUpdater - Function to handle status updates
+   * @return {undefined}
+   */
     static async followLog(rooms, statusUpdater) {
         rooms.forEach(async (room) => {
             const api = new ScreepsAPI({
@@ -83,8 +83,8 @@ export default class Helper {
             await api.auth();
 
             api.socket.connect();
-            api.socket.on("connected", () => { });
-            api.socket.on("auth", () => { });
+            api.socket.on("connected", () => {});
+            api.socket.on("auth", () => {});
             api.socket.subscribe(`room:${room}`, statusUpdater);
             api.socket.subscribe("console", (event) => {
                 if (event.data.messages) {
@@ -98,10 +98,10 @@ export default class Helper {
         });
     }
     /**
-     * Spawn bot
-     * @param {string} botName
-     * @param {string} roomName
-     */
+   * Spawn bot
+   * @param {string} botName
+   * @param {string} roomName
+   */
 
     static async spawnBot(botName, roomName, roomsSeen, cliPort) {
         console.log(`Spawn ${botName} in ${roomName}`);
@@ -113,17 +113,17 @@ export default class Helper {
     }
 
     /**
-     * sets password for user
-     *
-     * @param {string} line
-     * @param {object} socket
-     * @param {list} rooms
-     * @param {object} roomsSeen
-     * @param {stringMap} playerRooms
-     * @return {boolean}
-     */
+   * sets password for user
+   *
+   * @param {string} line
+   * @param {object} socket
+   * @param {list} rooms
+   * @param {object} roomsSeen
+   * @param {stringMap} playerRooms
+   * @return {boolean}
+   */
     static async setPassword(roomName, roomsSeen, playerRooms, cliPort) {
-        // eslint-disable-next-line no-param-reassign
+    // eslint-disable-next-line no-param-reassign
         roomsSeen[roomName] = true;
         console.log(`Set password for ${roomName}`);
         // Password is 'password'
@@ -143,14 +143,14 @@ export default class Helper {
     }
 
     /**
-     * sleep method
-     *
-     * Helper method to sleep for amount of seconds.
-     * @param {number} seconds Amount of seconds to sleep
-     * @return {object}
-     */
+   * sleep method
+   *
+   * Helper method to sleep for amount of seconds.
+   * @param {number} seconds Amount of seconds to sleep
+   * @return {object}
+   */
     static sleep(seconds) {
-        // eslint-disable-next-line no-promise-executor-return
+    // eslint-disable-next-line no-promise-executor-return
         return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
     }
 
@@ -193,11 +193,11 @@ export default class Helper {
     }
 
     /**
-     * startServer method
-     *
-     * Starts the private server
-     * @return {object}
-     */
+   * startServer method
+   *
+   * Starts the private server
+   * @return {object}
+   */
     static async startServer() {
         const stopCommand = `${basicCommand} down --volumes --remove-orphans --rmi all`;
 
@@ -214,11 +214,11 @@ export default class Helper {
             console.log("Starting server, this will take a while...");
             try {
                 const logsPath = join(__dirname, "../logs");
-                console.log()
+                console.log();
                 execSync(`mkdir -p ${logsPath} && chmod 777 ${logsPath}`);
                 // eslint-disable-next-line no-empty
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
             const upCommand = `${basicCommand} up -d`;
             execSync(upCommand);
