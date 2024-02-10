@@ -154,16 +154,9 @@ function UpdateConfigJsonFile() {
 
 export function RemoveLogs() {
   const logsPath = join(__dirname, "../logs");
-  const customLogsPath = join(__dirname, "../customLogs");
   let logsExist = fs.existsSync(logsPath);
   if (logsExist && argv.deleteLogs) {
     fs.rmdirSync(logsPath, { recursive: true });
-    logsExist = false;
-  }
-
-  const logcustomLogsExist = fs.existsSync(customLogsPath);
-  if (logcustomLogsExist && argv.deleteLogs) {
-    fs.rmdirSync(customLogsPath, { recursive: true });
     logsExist = false;
   }
 }

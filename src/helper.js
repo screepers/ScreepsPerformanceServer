@@ -20,7 +20,7 @@ const logger = winston.createLogger({
   defaultMeta: { service: "user-service" },
   transports: [
     new winston.transports.File({
-      filename: "customLogs/logListener.log",
+      filename: "logs/logListener.log",
       level: "debug",
     }),
   ],

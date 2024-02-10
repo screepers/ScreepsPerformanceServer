@@ -117,8 +117,8 @@ export default class Exporter {
   }
 
   static getLoggerFile() {
-    if (fs.existsSync("./customLogs/logListener.log", "utf8")) {
-      const fileText = fs.readFileSync("./customLogs/logListener.log", "utf8");
+    if (fs.existsSync("./logs/logListener.log", "utf8")) {
+      const fileText = fs.readFileSync("./logs/logListener.log", "utf8");
       const fileLineCount = fileText.split("\n").length;
       return { success: true, text: fileText, lineCount: fileLineCount };
     }
