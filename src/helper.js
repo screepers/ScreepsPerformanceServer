@@ -29,7 +29,7 @@ const logger = winston.createLogger({
     ],
 });
 
-const basicCommand = "docker-compose";
+const basicCommand = "docker compose";
 
 const filter = {
     controller: (o) => {
