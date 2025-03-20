@@ -98,17 +98,20 @@ export default class Helper {
         });
     }
     /**
-   * Spawn bot
-   * @param {string} botName
-   * @param {string} roomName
-   */
-
-    static async spawnBot(botName, roomName, roomsSeen, cliPort) {
+     * Spawn bot
+     * @param {string} botName
+     * @param {string} roomName
+     * @param roomsSeen
+     * @param cliPort
+     * @param ops
+     */
+    static async spawnBot(botName, roomName, roomsSeen, cliPort, ops) {
         console.log(`Spawn ${botName} in ${roomName}`);
-        await this.executeCliCommand(
-            `bots.spawn('${botName}', '${roomName}', {username: '${roomName}', auto:'true'})\r\n`,
-            cliPort
-        );
+        let command = `bots.spawn('${botName}', '${roomName}', {username: '${roomName}'`;
+        if (ops.x && ops.y) command += `, x:${ops.x}, y:${ops.y}`;
+        if (ops.auto) command += `,auto:'true'`;
+        command +='})\r\n';
+        await this.executeCliCommand(command, cliPort);
         await this.setPassword(roomName, roomsSeen, Config.playerRooms, cliPort);
     }
 
