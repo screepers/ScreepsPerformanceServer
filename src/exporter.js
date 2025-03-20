@@ -192,8 +192,8 @@ export default class Exporter {
       : "**Filtered Logs:** No log dump file found\n";
     const historyText = historyFile.success
       ? `**Milestone History:** ${historyFile.pasteBinUrl} (${
-          historyFile.lineCount - 1
-        } logs)\n`
+        historyFile.lineCount - 1
+      } logs)\n`
       : "**Milestone History:** No history file found\n";
 
     return (
