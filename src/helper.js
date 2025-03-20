@@ -1,18 +1,18 @@
 /* eslint-disable no-async-promise-executor */
 import fetch from "node-fetch";
 import _ from "lodash";
-import { ScreepsAPI } from "screeps-api";
-import { exec, execSync } from "child_process";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import {ScreepsAPI} from "screeps-api";
+import {exec, execSync} from "child_process";
+import {join, dirname} from "path";
+import {fileURLToPath} from "url";
 import minimist from "minimist";
 import winston from "winston";
 import Docker from "dockerode";
-import { RemoveLogs } from "./setup.js";
+import {RemoveLogs} from "./setup.js";
 
 let Config;
 const argv = minimist(process.argv.slice(2));
-const docker = new Docker({ socketPath: "/var/run/docker.sock" });
+const docker = new Docker({socketPath: "/var/run/docker.sock"});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +20,7 @@ const __dirname = dirname(__filename);
 const logger = winston.createLogger({
     level: "debug",
     format: winston.format.json(),
-    defaultMeta: { service: "user-service" },
+    defaultMeta: {service: "user-service"},
     transports: [
         new winston.transports.File({
             filename: "logs/logListener.log",
@@ -60,15 +60,15 @@ export default class Helper {
     }
 
     /**
-   * followLog method
-   *
-   * Connects to the api and reads and prints the console log, if messages
-   * are available
-   *
-   * @param {list} rooms - The rooms
-   * @param {function} statusUpdater - Function to handle status updates
-   * @return {undefined}
-   */
+     * followLog method
+     *
+     * Connects to the api and reads and prints the console log, if messages
+     * are available
+     *
+     * @param {list} rooms - The rooms
+     * @param {function} statusUpdater - Function to handle status updates
+     * @return {undefined}
+     */
     static async followLog(rooms, statusUpdater) {
         rooms.forEach(async (room) => {
             const api = new ScreepsAPI({
@@ -83,8 +83,10 @@ export default class Helper {
             await api.auth();
 
             api.socket.connect();
-            api.socket.on("connected", () => {});
-            api.socket.on("auth", () => {});
+            api.socket.on("connected", () => {
+            });
+            api.socket.on("auth", () => {
+            });
             api.socket.subscribe(`room:${room}`, statusUpdater);
             api.socket.subscribe("console", (event) => {
                 if (event.data.messages) {
@@ -97,6 +99,7 @@ export default class Helper {
             });
         });
     }
+
     /**
      * Spawn bot
      * @param {string} botName
@@ -110,7 +113,7 @@ export default class Helper {
         let command = `bots.spawn('${botName}', '${roomName}', {username: '${roomName}'`;
         if (ops.x && ops.y) command += `, x:${ops.x}, y:${ops.y}`;
         if (ops.auto) command += `,auto:'true'`;
-        command +='})\r\n';
+        command += '})\r\n';
         await this.executeCliCommand(command, cliPort);
         await this.setPassword(roomName, roomsSeen, Config.playerRooms, cliPort);
     }
@@ -125,7 +128,7 @@ export default class Helper {
      * @return {boolean}
      */
     static async setPassword(roomName, roomsSeen, playerRooms, cliPort) {
-    // eslint-disable-next-line no-param-reassign
+        // eslint-disable-next-line no-param-reassign
         roomsSeen[roomName] = true;
         console.log(`Set password for ${roomName}`);
         // Password is 'password'
@@ -145,14 +148,14 @@ export default class Helper {
     }
 
     /**
-   * sleep method
-   *
-   * Helper method to sleep for amount of seconds.
-   * @param {number} seconds Amount of seconds to sleep
-   * @return {object}
-   */
+     * sleep method
+     *
+     * Helper method to sleep for amount of seconds.
+     * @param {number} seconds Amount of seconds to sleep
+     * @return {object}
+     */
     static sleep(seconds) {
-    // eslint-disable-next-line no-promise-executor-return
+        // eslint-disable-next-line no-promise-executor-return
         return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
     }
 
@@ -195,11 +198,11 @@ export default class Helper {
     }
 
     /**
-   * startServer method
-   *
-   * Starts the private server
-   * @return {object}
-   */
+     * startServer method
+     *
+     * Starts the private server
+     * @return {object}
+     */
     static async startServer() {
         const stopCommand = `${basicCommand} down --volumes --remove-orphans --rmi all`;
 
@@ -210,7 +213,7 @@ export default class Helper {
         const startServer = new Promise(async (resolve) => {
             console.log("\r\nProcess: Starting server...");
             console.log("Stopping server...");
-            execSync(stopCommand, { stdio: argv.debug ? "inherit" : "ignore" });
+            execSync(stopCommand, {stdio: argv.debug ? "inherit" : "ignore"});
             RemoveLogs();
 
             console.log("Starting server, this will take a while...");
@@ -237,7 +240,7 @@ export default class Helper {
                 return true;
             })
             .catch((result) => {
-                console.error("error", { data: result });
+                console.error("error", {data: result});
                 return false;
             });
     }
@@ -266,7 +269,7 @@ export default class Helper {
                 return true;
             })
             .catch((result) => {
-                console.error("error", { data: result });
+                console.error("error", {data: result});
                 return false;
             });
     }
@@ -323,7 +326,7 @@ export default class Helper {
             const result = await fetch(`http://${hostname}:${cliPort}/cli`, {
                 method: "POST",
                 body: command,
-                headers: { "Content-Type": "text/plain" },
+                headers: {"Content-Type": "text/plain"},
             });
             const text = await result.text();
             console.log(`> ${command}`);

@@ -1,9 +1,9 @@
-import { execSync } from "child_process";
+import {execSync} from "child_process";
 import * as dotenv from "dotenv";
 import minimist from "minimist";
 
-import { join, dirname } from "path";
-import { fileURLToPath } from "url"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+import {join, dirname} from "path";
+import {fileURLToPath} from "url"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 /* eslint-disable-next-line */
 import CasePathImporter from "screeps-db-importer";
 import Setup from "./setup.js";
@@ -26,7 +26,7 @@ process.once("SIGINT", () => {
     console.log("Stop received...");
     const endTime = Date.now();
     console.log("Executing docker compose stop");
-    execSync("docker compose stop", { stdio: "ignore" });
+    execSync("docker compose stop", {stdio: "ignore"});
 
     console.log(
         `${lastTick} ticks elapsed, ${Math.floor(
@@ -49,9 +49,9 @@ class Tester {
     constructor() {
         try {
             this.maxTickCount =
-        argv.maxTickCount !== "undefined"
-            ? argv.maxTickCount || 50 * 1000
-            : 50 * 1000;
+                argv.maxTickCount !== "undefined"
+                    ? argv.maxTickCount || 50 * 1000
+                    : 50 * 1000;
             const maxBots = Math.max(argv.maxBots, 1) || 5;
 
             let rooms = Object.entries(Config.rooms);
@@ -59,7 +59,7 @@ class Tester {
                 const sortedRooms = rooms.sort(
                     (a, b) =>
                         Config.trackedRooms.indexOf(b[0]) -
-            Config.trackedRooms.indexOf(a[0])
+                        Config.trackedRooms.indexOf(a[0])
                 );
                 Config.rooms = {};
 
@@ -126,7 +126,7 @@ class Tester {
             }
             console.log(`${lastTick} End of simulation`);
             console.log("Executing docker compose stop");
-            execSync("docker compose stop", { stdio: "ignore" });
+            execSync("docker compose stop", {stdio: "ignore"});
 
             console.log("Status:");
             console.log(JSON.stringify(status, null, 2));
@@ -158,10 +158,10 @@ class Tester {
     }
 
     /**
-   * Updates the status object
-   *
-   * @param {object} event
-   */
+     * Updates the status object
+     *
+     * @param {object} event
+     */
     static statusUpdater = (event) => {
         if (event.data.gameTime !== lastTick) {
             lastTick = event.data.gameTime || 0;
@@ -170,7 +170,7 @@ class Tester {
                 const controllerLevel = status[room].level;
                 if (
                     controllerLevel >= 1 &&
-          controllerStatus[room][controllerLevel] === undefined
+                    controllerStatus[room][controllerLevel] === undefined
                 ) {
                     controllerStatus[room][controllerLevel] = {
                         level: controllerLevel,
@@ -185,10 +185,10 @@ class Tester {
                 const failedRooms = [];
                 if (
                     typeof milestone.success === "undefined" ||
-          milestone.success === null
+                    milestone.success === null
                 ) {
                     let success =
-            Object.keys(status).length === Config.trackedRooms.length;
+                        Object.keys(status).length === Config.trackedRooms.length;
                     Object.keys(status).forEach((room) => {
                         Object.keys(milestone.check).forEach((key) => {
                             if (status[room][key] < milestone.check[key]) {
@@ -255,19 +255,19 @@ class Tester {
     };
 
     /**
-   * execute method
-   *
-   * Connects via cli
-   * - Spawn to bot
-   * - Sets the password for the user
-   * - triggers `followLog`
-   * - Starts the simulation
-   * - Waits
-   * - Reads the controller data and checks controller progress
-   * @return {object}
-   */
+     * execute method
+     *
+     * Connects via cli
+     * - Spawn to bot
+     * - Sets the password for the user
+     * - triggers `followLog`
+     * - Starts the simulation
+     * - Waits
+     * - Reads the controller data and checks controller progress
+     * @return {object}
+     */
     async execute() {
-    // eslint-disable-next-line no-async-promise-executor
+        // eslint-disable-next-line no-async-promise-executor
         const execute = new Promise(async (resolve, reject) => {
             await Helper.executeCliCommand("system.resetAllData()", Config.cliPort);
             if (!(await Helper.restartServer())) process.emit("SIGINT");
@@ -309,7 +309,7 @@ class Tester {
             for (let roomCount = 0; roomCount < rooms.length; roomCount += 1) {
                 const roomData = rooms[roomCount];
                 const roomName = roomData[1].room;
-                const opts = roomData[1].opts? roomData[1].opts : {};
+                const opts = roomData[1].opts ? roomData[1].opts : {};
                 spawnBots.push(
                     Helper.spawnBot(roomData[1].name, roomName, this.roomsSeen, Config.cliPort, opts)
                 );
@@ -365,11 +365,11 @@ class Tester {
  * @return {undefined}
  */
 (async () => {
-    const { ports, config } = await Setup();
+    const {ports, config} = await Setup();
     Config = config;
     Config.serverPort = ports.serverPort;
     Config.cliPort = ports.cliPort;
-    dotenv.config({ path: join(__dirname, "../.env") });
+    dotenv.config({path: join(__dirname, "../.env")});
 
     Helper.setConfig(Config);
     const tester = new Tester();
