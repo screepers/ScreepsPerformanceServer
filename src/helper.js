@@ -116,15 +116,14 @@ export default class Helper {
     }
 
     /**
-   * sets password for user
-   *
-   * @param {string} line
-   * @param {object} socket
-   * @param {list} rooms
-   * @param {object} roomsSeen
-   * @param {stringMap} playerRooms
-   * @return {boolean}
-   */
+     * sets password for user
+     *
+     * @param roomName
+     * @param {object} roomsSeen
+     * @param {stringMap} playerRooms
+     * @param cliPort
+     * @return {boolean}
+     */
     static async setPassword(roomName, roomsSeen, playerRooms, cliPort) {
     // eslint-disable-next-line no-param-reassign
         roomsSeen[roomName] = true;

@@ -106,11 +106,11 @@ class Tester {
     }
 
     /**
-   *
-   * @param {string} line
-   * @param {object} resolve
-   * @return {undefined}
-   */
+     *
+     * @param {object} resolve
+     * @param reject
+     * @return {undefined}
+     */
     async checkForSuccess(resolve, reject) {
         let appendix = "";
         if (this.maxTickCount > 0) {
