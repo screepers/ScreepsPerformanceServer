@@ -13,18 +13,18 @@
 		"W2N5": "76561198092401383"
 	},
 
-	"rooms": {
-		"W1N1": "bot",
-		"W6N1": "bot",
-		"W2N5": "bot",
-		"W5N8": "bot",
-		"W7N3": "bot",
-		"W9N9": "bot",
-		"W3N9": "bot",
-		"W8N6": "bot",
-		"W3N3": "bot",
-		"W1N8": "bot"
-	},
+	"rooms": [
+		{"room":"W1N1", "name": "bot", "opts": {"x": 15, "y": 30}},
+		{"room":"W6N1", "name": "bot", "opts": {"auto": true }},
+		{"room":"W2N5", "name": "bot"},
+		{"room":"W5N8", "name": "bot"},
+		{"room":"W7N3", "name": "bot"},
+		{"room":"W9N9", "name": "bot"},
+		{"room":"W3N9", "name": "bot"},
+		{"room":"W8N6", "name": "bot"},
+		{"room":"W3N3", "name": "bot"},
+		{"room":"W1N8", "name": "bot"}
+	],
 
 	"trackedRooms": ["W1N1", "W5N8", "W7N3", "W2N5"],
 

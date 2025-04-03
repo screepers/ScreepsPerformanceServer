@@ -28,6 +28,15 @@ This is a Screeps server setup that includes milestones and the [Stats mod](http
 1. Create a new folder in the `bots` directory
 2. Add your bot's JS files to the new folder (the entry file must be named `main.js`)
 3. Update the `config.yml` file's `bots.bot` string to the path of your bot
+4. Update `config.json` with the bot spawn requirements
+
+opts properties:
+
+    * room - the room to spawn the bot into
+    * name - the name of a bot player from `config.yml`
+    * x - the X position of the spawn in the room, default is random (optional)
+    * y - the Y position of the spawn in the room, default is random (optional)
+    * auto - true/false if the bot supports auto spawning (optional)
 
 ### Run commands
 
