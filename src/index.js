@@ -8,7 +8,7 @@ import { fileURLToPath } from "url"; // see https://github.com/motdotla/dotenv#h
 import CasePathImporter from "screeps-db-importer";
 import Setup from "./setup.js";
 import Helper from "./helper.js";
-import Exporter from "./exporter.js";
+import Exporter from "./exporter/index.js";
 
 let Config;
 const argv = minimist(process.argv.slice(2));
@@ -100,6 +100,8 @@ class Tester {
         console.log("Timeout reached!");
         process.exit(1);
       }, actualMaxRunTime);
+
+      Exporter.init();
     } catch (e) {
       console.log(`Cannot parse runtime argument ${process.argv} ${e}`);
     }
@@ -216,8 +218,7 @@ class Tester {
             } else {
               console.log("===============================");
               console.log(
-                `${
-                  event.data.gameTime
+                `${event.data.gameTime
                 } Milestone: Reached too late ${JSON.stringify(milestone)}`
               );
               Exporter.sendPeriodicResult(
