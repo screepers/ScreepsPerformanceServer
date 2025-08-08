@@ -4,11 +4,9 @@ import minimist from "minimist";
 
 import { join, dirname } from "path";
 import { fileURLToPath } from "url"; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-/* eslint-disable-next-line */
-import CasePathImporter from "screeps-db-importer";
 import Setup from "./setup.js";
 import Helper from "./helper.js";
-import Exporter from "./exporter.js";
+import Exporter from "./exporter/index.js";
 
 let Config;
 const argv = minimist(process.argv.slice(2));
@@ -43,7 +41,7 @@ process.once("SIGINT", () => {
 
 class Tester {
   roomsSeen = {};
-
+  exporter = new Exporter();
   maxTickCount;
 
   constructor() {
@@ -137,7 +135,7 @@ class Tester {
         (milestone) =>
           milestone.required && milestone.tick < lastTick && !milestone.success
       );
-      await Exporter.sendFinalResult(
+      await this.exporter.sendFinalResult(
         Config.milestones,
         fails,
         status,
@@ -180,8 +178,8 @@ class Tester {
         }
       });
 
-      for (let i = 0; i < Config.milestones.length; i += 1) {
-        const milestone = Config.milestones[i];
+      for (const element of Config.milestones) {
+        const milestone = element;
         const failedRooms = [];
         if (
           typeof milestone.success === "undefined" ||
@@ -208,7 +206,7 @@ class Tester {
                   milestone
                 )}`
               );
-              Exporter.sendPeriodicResult(
+              this.exporter.sendPeriodicResult(
                 event.data.gameTime,
                 milestone,
                 startTime
@@ -216,11 +214,10 @@ class Tester {
             } else {
               console.log("===============================");
               console.log(
-                `${
-                  event.data.gameTime
+                `${event.data.gameTime
                 } Milestone: Reached too late ${JSON.stringify(milestone)}`
               );
-              Exporter.sendPeriodicResult(
+              this.exporter.sendPeriodicResult(
                 event.data.gameTime,
                 milestone,
                 startTime
@@ -237,7 +234,7 @@ class Tester {
               milestone
             )} status: ${JSON.stringify(status)}`
           );
-          Exporter.sendPeriodicResult(
+          this.exporter.sendPeriodicResult(
             event.data.gameTime,
             milestone,
             startTime
@@ -306,8 +303,8 @@ class Tester {
 
       const spawnBots = [];
       const rooms = Object.entries(Config.rooms);
-      for (let roomCount = 0; roomCount < rooms.length; roomCount += 1) {
-        const roomData = rooms[roomCount];
+      for (const element of rooms) {
+        const roomData = element;
         const roomName = roomData[1].room;
         const opts = roomData[1].opts ? roomData[1].opts : {};
         spawnBots.push(
@@ -327,10 +324,6 @@ class Tester {
       ) {
         Helper.followLog(Config.trackedRooms, Tester.statusUpdater);
         await Helper.sleep(10);
-        // await CasePathImporter("default/performanceServer", {
-        //   serverPort: Config.serverPort,
-        //   cliPort: Config.cliPort,
-        // });
         await Helper.executeCliCommand(
           "system.resumeSimulation()",
           Config.cliPort
@@ -371,7 +364,7 @@ class Tester {
  * @return {undefined}
  */
 (async () => {
-  const { ports, config } = await Setup();
+  const { ports, config } = await Setup.Start();
   Config = config;
   Config.serverPort = ports.serverPort;
   Config.cliPort = ports.cliPort;
