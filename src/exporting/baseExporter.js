@@ -76,18 +76,21 @@ export default class BaseExporter {
     const timeRun = (endTime - startTime) / 1000 / 60 / 60; // in hours
 
     const loggerText = loggerFile.success
-      ? `**Filtered Logs:** ${loggerFile.pasteBinUrl} (${loggerFile.lineCount - 1
+      ? `**Filtered Logs:** ${loggerFile.pasteBinUrl} (${
+        loggerFile.lineCount - 1
       } logs)\n`
       : "**Filtered Logs:** No log dump file found\n";
     const historyText = historyFile.success
-      ? `**Milestone History:** ${historyFile.pasteBinUrl} (${historyFile.lineCount - 1
+      ? `**Milestone History:** ${historyFile.pasteBinUrl} (${
+        historyFile.lineCount - 1
       } logs)\n`
       : "**Milestone History:** No history file found\n";
 
     return (
       `**Performance Test Results**\n` +
       `**Commit:** ${this.commitName}\n` +
-      `**Fails:** ${fails.length === 0 ? "No fails!" : `${fails.length} fails`
+      `**Fails:** ${
+        fails.length === 0 ? "No fails!" : `${fails.length} fails`
       }\n` +
       `**Game Time :** ${lastTickNumber}\n` +
       `**Time:** Start: ${new Date(startTime).toISOString()} - End: ${new Date(
@@ -109,11 +112,7 @@ export default class BaseExporter {
   }
 
   getPeriodicResultMessage(gameTime, milestone, startTime) {
-    return this.generatePeriodicMessage(
-      gameTime,
-      milestone,
-      startTime
-    );
+    return this.generatePeriodicMessage(gameTime, milestone, startTime);
   }
 
   async getFinalResultMessage(
